@@ -1,0 +1,62 @@
+package com.example.flightapi.security.config;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+import java.util.List;
+
+@Configuration
+public class CorsConfig implements WebMvcConfigurer {
+
+    @Value("#{'${cors.allowed-origins}'.split(',')}")
+    private List<String> allowedOrigins;
+    
+    @Value("#{'${cors.allowed-methods}'.split(',')}")
+    private List<String> allowedMethods;
+    
+    @Value("#{'${cors.allowed-headers}'.split(',')}")
+    private List<String> allowedHeaders;
+    
+    @Value("${cors.max-age}")
+    private Long maxAge;
+
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**")
+                .allowedOrigins(allowedOrigins.toArray(new String[0]))  // 使用配置文件中的域名列表
+                .allowedMethods(allowedMethods.toArray(new String[0]))  // 使用配置文件中的方法列表
+                .allowedHeaders(allowedHeaders.toArray(new String[0]))  // 使用配置文件中的请求头列表
+                .allowCredentials(true)
+                .maxAge(maxAge);  // 使用配置文件中的最大缓存时间
+    }
+
+    @Bean
+    public CorsFilter corsFilter() {
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        CorsConfiguration config = new CorsConfiguration();
+
+        // 设置允许的来源
+        config.setAllowedOrigins(allowedOrigins);
+
+        // 设置允许的请求头
+        config.setAllowedHeaders(allowedHeaders);
+
+        // 设置允许的方法
+        config.setAllowedMethods(allowedMethods);
+
+        // 允许携带认证信息
+        config.setAllowCredentials(true);
+
+        // 预检请求的有效期，单位为秒
+        config.setMaxAge(maxAge);
+
+        source.registerCorsConfiguration("/**", config);
+        return new CorsFilter(source);
+    }
+}
