@@ -83,7 +83,7 @@ public class UserController {
     @PutMapping(value = "center")
     public ApiResult centerUser(@RequestBody User resources) {
         if (!resources.getId().equals(SecurityUtils.getCurrentUserId())) {
-            return ApiResult.fail(messageUtils.getMessage("user.modifyInfo.error"));
+            return ApiResult.failMessage(messageUtils.getMessage("user.modifyInfo.error"));
         }
         userService.updateCenter(resources);
         return ApiResult.success();
@@ -104,10 +104,10 @@ public class UserController {
         String newPass = RsaUtils.decryptByPrivateKey(RsaProperties.privateKey, passVo.getNewPass());
         User user = userService.findByEmail(SecurityUtils.getCurrentUsername());
         if (!passwordEncoder.matches(oldPass, user.getPassword())) {
-            return ApiResult.fail(messageUtils.getMessage("user.oldpassword.error"));
+            return ApiResult.failMessage(messageUtils.getMessage("user.oldpassword.error"));
         }
         if (passwordEncoder.matches(newPass, user.getPassword())) {
-            return ApiResult.fail(messageUtils.getMessage("user.newoldpassword.error"));
+            return ApiResult.failMessage(messageUtils.getMessage("user.newoldpassword.error"));
         }
         userService.updatePass(user.getEmail(), passwordEncoder.encode(newPass));
         return ApiResult.success();

@@ -5,11 +5,11 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.web.servlet.LocaleResolver;
-import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
-import org.springframework.web.servlet.i18n.SessionLocaleResolver;
+import org.springframework.web.servlet.i18n.AcceptHeaderLocaleResolver;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
 
 @Configuration
@@ -26,20 +26,16 @@ public class I18nConfig implements WebMvcConfigurer {
 
     @Bean
     public LocaleResolver localeResolver() {
-        SessionLocaleResolver slr = new SessionLocaleResolver();
-        slr.setDefaultLocale(Locale.ENGLISH);  // 默认语言
-        return slr;
-    }
-
-    @Bean
-    public LocaleChangeInterceptor localeChangeInterceptor() {
-        LocaleChangeInterceptor lci = new LocaleChangeInterceptor();
-        lci.setParamName("lang=en");  // URL 参数：?lang=zh_CN 或 ?lang=en_US
-        return lci;
-    }
-
-    @Override
-    public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(localeChangeInterceptor());
+        AcceptHeaderLocaleResolver resolver = new AcceptHeaderLocaleResolver();
+        resolver.setDefaultLocale(Locale.ENGLISH);  // 默认语言为英语
+        
+        // 设置支持的语言列表
+        List<Locale> supportedLocales = Arrays.asList(
+            Locale.ENGLISH,      // 英语
+            Locale.SIMPLIFIED_CHINESE  // 简体中文
+        );
+        resolver.setSupportedLocales(supportedLocales);
+        
+        return resolver;
     }
 }

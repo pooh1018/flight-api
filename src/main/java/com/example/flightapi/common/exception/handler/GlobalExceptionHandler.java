@@ -39,7 +39,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiResult> handleException(Throwable e){
         // 打印堆栈信息
         log.error(ThrowableUtil.getStackTrace(e));
-        return buildResponseEntity(ApiResult.fail(e.getMessage()));
+        return buildResponseEntity(ApiResult.failMessage(e.getMessage()));
     }
 
     /**
@@ -50,7 +50,7 @@ public class GlobalExceptionHandler {
         // 打印堆栈信息
         String message = messageUtils.getMessage("user.credentials.bad").equals(e.getMessage()) ? messageUtils.getMessage("user.password.error") : e.getMessage();
         log.error(message);
-        return buildResponseEntity(ApiResult.fail(message));
+        return buildResponseEntity(ApiResult.failMessage(message));
     }
 
     /**
@@ -71,7 +71,7 @@ public class GlobalExceptionHandler {
         // 打印堆栈信息
 //        log.error(ThrowableUtil.getStackTrace(e));
 //        return buildResponseEntity(ApiResult.fail(e.getMessage()));
-        return ApiResult.fail(e.getMessage());
+        return ApiResult.failMessage(e.getMessage());
     }
 
     /**
@@ -82,7 +82,7 @@ public class GlobalExceptionHandler {
         // 打印堆栈信息
 //        log.error(ThrowableUtil.getStackTrace(e));
 //        return buildResponseEntity(ApiResult.fail(String.valueOf(HttpStatus.NOT_FOUND.value()), e.getMessage()));
-        return ApiResult.fail(e.getMessage());
+        return ApiResult.failMessage(e.getMessage());
     }
 
     /**
@@ -97,7 +97,7 @@ public class GlobalExceptionHandler {
         if (objectError instanceof FieldError) {
             message = ((FieldError) objectError).getField() + ": " + message;
         }
-        return buildResponseEntity(ApiResult.fail(message));
+        return buildResponseEntity(ApiResult.failMessage(message));
     }
 
     /**
@@ -109,7 +109,7 @@ public class GlobalExceptionHandler {
 //        log.error(ThrowableUtil.getStackTrace(e));
         String message = messageUtils.getMessage("user.authentication.failed");
 //        return buildResponseEntity(ApiResult.fail(String.valueOf(HttpStatus.UNAUTHORIZED.value()), message));
-        return ApiResult.fail(message);
+        return ApiResult.fail(String.valueOf(HttpStatus.UNAUTHORIZED.value()), message);
     }
 
     /**
@@ -121,7 +121,7 @@ public class GlobalExceptionHandler {
 //        log.error(ThrowableUtil.getStackTrace(e));
         String message = messageUtils.getMessage("user.access.denied");
 //        return buildResponseEntity(ApiResult.fail(String.valueOf(HttpStatus.FORBIDDEN.value()), message));
-        return ApiResult.fail(message);
+        return ApiResult.failMessage(message);
     }
 
     /**
@@ -133,7 +133,7 @@ public class GlobalExceptionHandler {
 //        log.error(ThrowableUtil.getStackTrace(e));
         String message = messageUtils.getMessage("user.not.found");
 //        return buildResponseEntity(ApiResult.fail(String.valueOf(HttpStatus.UNAUTHORIZED.value()), message));
-        return ApiResult.fail(message);
+        return ApiResult.fail(String.valueOf(HttpStatus.UNAUTHORIZED.value()), message);
     }
 
     /**
@@ -156,7 +156,7 @@ public class GlobalExceptionHandler {
 //        log.error(ThrowableUtil.getStackTrace(e));
         String message = messageUtils.getMessage("user.account.locked");
 //        return buildResponseEntity(ApiResult.fail(String.valueOf(HttpStatus.UNAUTHORIZED.value()), message));
-        return ApiResult.fail(message);
+        return ApiResult.failMessage(message);
     }
 
     /**
@@ -168,7 +168,7 @@ public class GlobalExceptionHandler {
 //        log.error(ThrowableUtil.getStackTrace(e));
         String message = messageUtils.getMessage("user.disabled");
 //        return buildResponseEntity(ApiResult.fail(String.valueOf(HttpStatus.UNAUTHORIZED.value()), message));
-        return ApiResult.fail(message);
+        return ApiResult.failMessage(message);
     }
 
     /**
