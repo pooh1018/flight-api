@@ -10,9 +10,15 @@ import lombok.Data;
 @Data
 public class UserPassRequestDTO {
 
-    @ApiModelProperty(value = "旧密码")
+    @ApiModelProperty(value = "email")
+    private String email;
+
+    @ApiModelProperty(value = "old password")
     private String oldPass;
 
-    @ApiModelProperty(value = "新密码")
+    @ApiModelProperty(value = "new password")
     private String newPass;
+
+    @ApiModelProperty(value = "confirm password")
+    private String confirmPass;
 }

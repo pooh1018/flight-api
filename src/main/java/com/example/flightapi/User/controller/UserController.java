@@ -58,7 +58,12 @@ public class UserController {
     @ApiOperation("通过email查询用户")
     @GetMapping(value = "/findByEmail")
     public ApiResult findByEmail(@RequestParam String email) {
-        return ApiResult.success(userService.findByEmail(email));
+        User user = userService.findByEmail(email);
+        if(user == null) {
+            return ApiResult.failMessage(messageUtils.getMessage("user.not.found"));
+        } else {
+            return ApiResult.success(user);
+        }
     }
 
     @ApiOperation("新增用户")
@@ -103,6 +108,7 @@ public class UserController {
         String oldPass = RsaUtils.decryptByPrivateKey(RsaProperties.privateKey, passVo.getOldPass());
         String newPass = RsaUtils.decryptByPrivateKey(RsaProperties.privateKey, passVo.getNewPass());
         User user = userService.findByEmail(SecurityUtils.getCurrentUsername());
+//        User user = userService.getLoginData(passVo.getEmail());
         if (!passwordEncoder.matches(oldPass, user.getPassword())) {
             return ApiResult.failMessage(messageUtils.getMessage("user.oldpassword.error"));
         }
@@ -120,4 +126,22 @@ public class UserController {
         userService.resetPwd(ids, pwd);
         return ApiResult.success();
     }
+
+    @ApiOperation("邮箱重置密码")
+    @PostMapping(value = "/resetPwdByEmail")
+    public ApiResult resetPwdByEmail(@RequestBody UserPassRequestDTO passVo) throws Exception {
+
+        String newPass = RsaUtils.decryptByPrivateKey(RsaProperties.privateKey, passVo.getNewPass());
+        String confirmPass = RsaUtils.decryptByPrivateKey(RsaProperties.privateKey, passVo.getConfirmPass());
+        if (!newPass.equals(confirmPass)) {
+            return ApiResult.failMessage(messageUtils.getMessage("user.newconfirmpassword.error"));
+        }
+        User user = userService.findByEmail(passVo.getEmail());
+        if (passwordEncoder.matches(newPass, user.getPassword())) {
+            return ApiResult.failMessage(messageUtils.getMessage("user.newoldpassword.error"));
+        }
+        userService.updatePass(passVo.getEmail(), passwordEncoder.encode(newPass));;
+        return ApiResult.success();
+    }
+
 }

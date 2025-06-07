@@ -93,6 +93,7 @@ security:
       # 允许放开接口
       - "/flights"
       - "/airports"
+      - "/users/findByEmail"
       # swagger，静态资源等等
       - "/api/docs"
       - "/swagger-ui/**"
@@ -100,6 +101,7 @@ security:
     post:
       - "/auth/login"
       - "/auth/register"
+      - "/users/resetPwdByEmail"
     # 所有方法都可匿名访问的接口
     all:
       - "/public/**"
