@@ -1,7 +1,8 @@
 package com.example.flightapi.Booking.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
-import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 import org.springframework.data.mongodb.core.mapping.DBRef;
@@ -9,7 +10,8 @@ import org.springframework.data.mongodb.core.mapping.DBRef;
 @Data
 @Document(collection = "passenger")
 public class Passenger {
-    @Id
+
+    @TableId(value = "id", type = IdType.AUTO)
     private String id;
 
     @Field("booking_id")
@@ -21,6 +23,10 @@ public class Passenger {
     @Field("last_name")
     private String lastName;
 
+    @Field("email")
+    private String email;
+
+    // 不在MongoDB Schema中定义，但对业务有用的可选字段
     @Field("seat_number")
     private String seatNumber;
 
