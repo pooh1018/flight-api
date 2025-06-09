@@ -14,22 +14,22 @@ import java.util.List;
 @Configuration
 public class CorsConfig implements WebMvcConfigurer {
 
-    @Value("#{'${cors.allowed-origins}'.split(',')}")
-    private List<String> allowedOrigins;
-    
-    @Value("#{'${cors.allowed-methods}'.split(',')}")
+    @Value("#{'${cors.allowed-origin-patterns}'.split(',')}")
+    private List<String> allowedOriginPatterns;
+
+    @Value("#{'${cors.allowed-methods:GET,POST,PUT,DELETE,OPTIONS}'.split(',')}")
     private List<String> allowedMethods;
-    
-    @Value("#{'${cors.allowed-headers}'.split(',')}")
+
+    @Value("#{'${cors.allowed-headers:*}'.split(',')}")
     private List<String> allowedHeaders;
-    
-    @Value("${cors.max-age}")
+
+    @Value("${cors.max-age:3600}")
     private Long maxAge;
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins(allowedOrigins.toArray(new String[0]))  // 使用配置文件中的域名列表
+                .allowedOriginPatterns(allowedOriginPatterns.toArray(new String[0]))  // 使用配置文件中的模式列表
                 .allowedMethods(allowedMethods.toArray(new String[0]))  // 使用配置文件中的方法列表
                 .allowedHeaders(allowedHeaders.toArray(new String[0]))  // 使用配置文件中的请求头列表
                 .allowCredentials(true)
@@ -41,8 +41,8 @@ public class CorsConfig implements WebMvcConfigurer {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
 
-        // 设置允许的来源
-        config.setAllowedOrigins(allowedOrigins);
+        // 设置允许的来源模式
+        config.setAllowedOriginPatterns(allowedOriginPatterns);
 
         // 设置允许的请求头
         config.setAllowedHeaders(allowedHeaders);

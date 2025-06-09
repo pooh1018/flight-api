@@ -39,7 +39,8 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiResult> handleException(Throwable e){
         // 打印堆栈信息
         log.error(ThrowableUtil.getStackTrace(e));
-        return buildResponseEntity(ApiResult.failMessage(e.getMessage()));
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+            .body(ApiResult.fail(String.valueOf(HttpStatus.INTERNAL_SERVER_ERROR.value()), e.getMessage()));
     }
 
     /**

@@ -4,7 +4,8 @@ src/main/resources/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
-
+node_modules
+logs
 
 ### STS ###
 .apt_generated
@@ -16,6 +17,7 @@ src/main/resources/
 .sts4-cache
 
 ### IntelliJ IDEA ###
+.github
 .idea
 *.iws
 *.iml

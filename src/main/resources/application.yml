@@ -48,11 +48,20 @@ spring:
     pathmatch:
       matching-strategy: ANT_PATH_MATCHER
 
-logging:
-  level:
-    root: INFO
-    org.springframework.security: INFO
-    com.example.flightapi.User.repository: debug
+  pid:
+    file: ./FlightApiApplication.pid
+
+  profiles:
+    active: ${LOG_ACTIVE:dev}
+#
+#logging:
+#  level:
+#    root: INFO
+#    org.springframework.security: INFO
+#    com.example.flightapi.*.controller: INFO
+#    com.example.flightapi.*.service.impl: INFO
+#    com.example.flightapi.*.repository: INFO
+#    com.example.flightapi.*.service: INFO
 
 # 登录相关配置
 login:
@@ -97,6 +106,7 @@ security:
     # GET请求可匿名访问的接口
     get:
       # 允许放开接口
+      - "/"          #API URL首页
       - "/flights"
       - "/airports"
       - "/users/findByEmail"
@@ -117,7 +127,13 @@ security:
 
 # CORS配置
 cors:
-  allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:8011,http://localhost:8012}
+  # 允许以下几种模式：
+  # 1. 特定IP（任意端口）: http://192.168.1.100:*
+  # 2. 特定IP+端口组合: http://192.168.1.100:8080
+  # 3. 特定IP的多个端口: http://192.168.1.100:8011, http://192.168.1.100:8012
+  # 4. *://*:8021
+  # 5. 本地开发环境: http://localhost:*
+  allowed-origin-patterns: ${CORS_ALLOWED_ORIGIN_PATTERNS:http://localhost:8011,*://*:80}
   allowed-methods: GET,POST,PUT,DELETE,OPTIONS,PATCH
   allowed-headers: "*"  #Authorization,Content-Type,X-Requested-With,Accept,Origin,Access-Control-Request-Method,Access-Control-Request-Headers
   max-age: 300

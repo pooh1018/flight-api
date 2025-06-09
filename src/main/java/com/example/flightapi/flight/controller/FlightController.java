@@ -4,6 +4,7 @@ import com.example.flightapi.common.exception.handler.ApiResult;
 import com.example.flightapi.flight.dto.FlightDTO;
 import com.example.flightapi.flight.entity.Flight;
 import com.example.flightapi.flight.service.FlightService;
+import com.example.flightapi.security.config.DictionaryProperties;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;

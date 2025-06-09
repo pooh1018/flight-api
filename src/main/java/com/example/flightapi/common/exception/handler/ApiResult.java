@@ -44,7 +44,6 @@ public class ApiResult<T> implements Serializable {
         return fail(null, message);
     }
 
-
     public static ApiResult<Void> fail(String code, String message) {
         return fail(code, message, null);
     }
@@ -66,6 +65,13 @@ public class ApiResult<T> implements Serializable {
         ApiResult<T> result = new ApiResult<>();
         result.success = true;
         result.data = data;
+        return result;
+    }
+
+    public static <T> ApiResult<T> success(String message) {
+        ApiResult<T> result = new ApiResult<>();
+        result.success = true;
+        result.message = message;
         return result;
     }
 
