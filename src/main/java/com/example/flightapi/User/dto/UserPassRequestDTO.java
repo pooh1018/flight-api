@@ -1,6 +1,6 @@
 package com.example.flightapi.User.dto;
 
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 /**
@@ -10,15 +10,15 @@ import lombok.Data;
 @Data
 public class UserPassRequestDTO {
 
-    @ApiModelProperty(value = "email")
+    @Schema(description = "用户邮箱", required = true, example = "user@example.com")
     private String email;
 
-    @ApiModelProperty(value = "old password")
+    @Schema(description = "旧密码", required = true, minLength = 6, maxLength = 20)
     private String oldPass;
 
-    @ApiModelProperty(value = "new password")
+    @Schema(description = "新密码", required = true, minLength = 6, maxLength = 20)
     private String newPass;
 
-    @ApiModelProperty(value = "confirm password")
+    @Schema(description = "确认密码(必须与新密码一致)", required = true, minLength = 6, maxLength = 20)
     private String confirmPass;
 }

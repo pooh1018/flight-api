@@ -4,14 +4,21 @@ import com.example.flightapi.airport.dto.AirportDTO;
 import com.example.flightapi.airport.entity.Airport;
 import com.example.flightapi.airport.service.AirportService;
 import com.example.flightapi.common.exception.handler.ApiResult;
-import io.swagger.annotations.*;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Api(tags = "Airport Management", description = "Provides CRUD APIs for airport management")
+@Tag(name = "Airport Management", description = "Provides CRUD APIs for airport management")
 @RestController
 @RequestMapping("/airports")
 public class AirportController {
@@ -19,98 +26,90 @@ public class AirportController {
     @Autowired
     private AirportService airportService;
 
-    @ApiOperation(value = "Create New Airport", notes = "Create a new airport record")
+    @Operation(summary = "Create New Airport", description = "Create a new airport record")
     @ApiResponses(value = {
-        @ApiResponse(code = 201, message = "Airport created successfully"),
-        @ApiResponse(code = 400, message = "Invalid request parameters"),
-        @ApiResponse(code = 500, message = "Internal server error")
+        @ApiResponse(responseCode = "201", description = "Airport created successfully"),
+        @ApiResponse(responseCode = "400", description = "Invalid request parameters"),
+        @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ApiResult createAirport(
-            @ApiParam(value = "Airport information", required = true)
+            @Parameter(description = "Airport information", required = true)
             @RequestBody AirportDTO airportDTO) {
         Airport airport = new Airport();
-        airport.setAirportId(airportDTO.getAirportId());
-        airport.setAirportCode(airportDTO.getAirportCode());
-        airport.setAirportName(airportDTO.getAirportName());
-        airport.setCity(airportDTO.getCity());
-        airport.setCountry(airportDTO.getCountry());
+        BeanUtils.copyProperties(airportDTO, airport);
         airportService.saveAirport(airport);
         return ApiResult.success();
     }
 
-    @ApiOperation(value = "Get Airport by ID", notes = "Returns detailed information of a specific airport by ID")
+    @Operation(summary = "Get Airport by ID", description = "Returns detailed information of a specific airport by ID")
     @ApiResponses(value = {
-        @ApiResponse(code = 200, message = "Successfully retrieved airport information"),
-        @ApiResponse(code = 404, message = "Airport not found"),
-        @ApiResponse(code = 500, message = "Internal server error")
+        @ApiResponse(responseCode = "200", description = "Successfully retrieved airport information"),
+        @ApiResponse(responseCode = "404", description = "Airport not found"),
+        @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @GetMapping("/{id}")
     public ApiResult getAirportById(
-            @ApiParam(value = "Airport ID", required = true, example = "PEK")
+            @Parameter(description = "Airport ID", required = true, example = "PEK")
             @PathVariable String id) {
         return ApiResult.success(airportService.getAirportById(id));
     }
 
-    @ApiOperation(value = "Get Airport by Code", notes = "Returns detailed information of a specific airport by code")
+    @Operation(summary = "Get Airport by Code", description = "Returns detailed information of a specific airport by code")
     @ApiResponses(value = {
-        @ApiResponse(code = 200, message = "Successfully retrieved airport information"),
-        @ApiResponse(code = 404, message = "Airport not found"),
-        @ApiResponse(code = 500, message = "Internal server error")
+        @ApiResponse(responseCode = "200", description = "Successfully retrieved airport information"),
+        @ApiResponse(responseCode = "404", description = "Airport not found"),
+        @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @GetMapping("/code/{code}")
     public ApiResult getAirportByCode(
-            @ApiParam(value = "Airport code", required = true, example = "PEK")
+            @Parameter(description = "Airport code", required = true, example = "PEK")
             @PathVariable String code) {
         return ApiResult.success(airportService.getAirportByCode(code));
     }
 
-    @ApiOperation(value = "Get All Airports", notes = "Returns a list of all airports in the system")
+    @Operation(summary = "Get All Airports", description = "Returns a list of all airports in the system")
     @ApiResponses(value = {
-        @ApiResponse(code = 200, message = "Successfully retrieved airport list"),
-        @ApiResponse(code = 500, message = "Internal server error")
+        @ApiResponse(responseCode = "200", description = "Successfully retrieved airport list"),
+        @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @GetMapping
     public ApiResult getAllAirports() {
         return ApiResult.success(airportService.getAllAirports());
     }
 
-    @ApiOperation(value = "Update Airport", notes = "Update information of a specific airport by ID")
+    @Operation(summary = "Update Airport", description = "Update information of a specific airport by ID")
     @ApiResponses(value = {
-        @ApiResponse(code = 200, message = "Airport information updated successfully"),
-        @ApiResponse(code = 400, message = "Invalid request parameters"),
-        @ApiResponse(code = 404, message = "Airport not found"),
-        @ApiResponse(code = 500, message = "Internal server error")
+        @ApiResponse(responseCode = "200", description = "Airport information updated successfully"),
+        @ApiResponse(responseCode = "400", description = "Invalid request parameters"),
+        @ApiResponse(responseCode = "404", description = "Airport not found"),
+        @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @PutMapping("/{id}")
     public ApiResult updateAirport(
-            @ApiParam(value = "Airport ID", required = true, example = "PEK")
+            @Parameter(description = "Airport ID", required = true, example = "PEK")
             @PathVariable String id,
-            @ApiParam(value = "Updated airport information", required = true)
+            @Parameter(description = "Updated airport information", required = true)
             @RequestBody AirportDTO airportDTO) {
         Airport airport = airportService.getAirportById(id);
         if (airport != null) {
-            airport.setAirportId(airportDTO.getAirportId());
-            airport.setAirportCode(airportDTO.getAirportCode());
-            airport.setAirportName(airportDTO.getAirportName());
-            airport.setCity(airportDTO.getCity());
-            airport.setCountry(airportDTO.getCountry());
+            BeanUtils.copyProperties(airportDTO, airport);
             return ApiResult.success(airportService.updateAirport(airport));
         }
         return ApiResult.success(null);
     }
 
-    @ApiOperation(value = "Delete Airport", notes = "Delete a specific airport by ID")
+    @Operation(summary = "Delete Airport", description = "Delete a specific airport by ID")
     @ApiResponses(value = {
-        @ApiResponse(code = 204, message = "Airport deleted successfully"),
-        @ApiResponse(code = 404, message = "Airport not found"),
-        @ApiResponse(code = 500, message = "Internal server error")
+        @ApiResponse(responseCode = "204", description = "Airport deleted successfully"),
+        @ApiResponse(responseCode = "404", description = "Airport not found"),
+        @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ApiResult deleteAirport(
-            @ApiParam(value = "Airport ID to delete", required = true, example = "PEK")
+            @Parameter(description = "Airport ID to delete", required = true, example = "PEK")
             @PathVariable String id) {
         airportService.deleteAirport(id);
         return ApiResult.success();

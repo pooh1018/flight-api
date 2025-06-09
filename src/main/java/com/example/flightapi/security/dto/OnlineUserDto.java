@@ -1,6 +1,6 @@
 package com.example.flightapi.security.dto;
 
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,27 +16,27 @@ import java.util.Date;
 @NoArgsConstructor
 public class OnlineUserDto {
 
-    @ApiModelProperty(value = "Token编号")
+    @Schema(description = "Token编号", example = "abc123xyz")
     private String uid;
 
-    @ApiModelProperty(value = "用户名")
+    @Schema(description = "用户名", example = "admin")
     private String userName;
 
-    @ApiModelProperty(value = "昵称")
+    @Schema(description = "昵称", example = "系统管理员")
     private String nickName;
 
-    @ApiModelProperty(value = "浏览器")
+    @Schema(description = "浏览器", example = "Chrome 115")
     private String browser;
 
-    @ApiModelProperty(value = "IP")
+    @Schema(description = "IP", example = "192.168.1.100")
     private String ip;
 
-    @ApiModelProperty(value = "地址")
+    @Schema(description = "地址", example = "北京市海淀区")
     private String address;
 
-    @ApiModelProperty(value = "token")
+    @Schema(description = "token", example = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...")
     private String key;
 
-    @ApiModelProperty(value = "登录时间")
+    @Schema(description = "登录时间", example = "2023-07-20T10:15:30Z")
     private Date loginTime;
 }

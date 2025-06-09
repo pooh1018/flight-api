@@ -1,7 +1,7 @@
 package com.example.flightapi.security.dto;
 
 import com.alibaba.fastjson2.annotation.JSONField;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import com.example.flightapi.User.entity.User;
@@ -18,10 +18,10 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class JwtUserDto implements UserDetails {
 
-    @ApiModelProperty(value = "用户")
+    @Schema(description = "用户信息", implementation = com.example.flightapi.User.entity.User.class)
     private final User user;
 
-    @ApiModelProperty(value = "角色")
+    @Schema(description = "角色权限列表", implementation = AuthorityDto.class)
     private final List<AuthorityDto> authorities;
 
     public Set<String> getRoles() {

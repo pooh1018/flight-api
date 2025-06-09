@@ -3,7 +3,7 @@ package com.example.flightapi.User.entity;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -20,39 +20,49 @@ import org.springframework.data.mongodb.core.mapping.Field;
 @Data
 public class User {
 
+    private static final long serialVersionUID = 1L;
+
     @TableId(value = "id", type = IdType.AUTO)
+    @Schema(description = "主键ID", accessMode = Schema.AccessMode.READ_ONLY)
     private String id;
 
-    @ApiModelProperty(value = "user id")
+    @Schema(description = "用户ID", example = "1001", required = true)
     @Field("user_id")
     private int userId;
 
-    @ApiModelProperty(value = "nick name")
+    @Schema(description = "用户昵称", example = "飞行达人", maxLength = 50)
     @Field("nick_name")
     private String nickName;
 
-    @ApiModelProperty(value = "country")
+    @Schema(description = "国家/地区代码", example = "CN", maxLength = 2)
     private String country;
 
-    @ApiModelProperty(value = "email")
+    @Schema(description = "用户邮箱(登录账号)", 
+            example = "user@example.com", 
+            required = true, 
+            format = "email")
     private String email;
 
-    @ApiModelProperty(value = "first name")
+    @Schema(description = "名字", example = "三", maxLength = 50)
     @Field("first_name")
     private String firstName;
 
-    @ApiModelProperty(value = "last name")
+    @Schema(description = "姓氏", example = "张", maxLength = 50)
     @Field("last_name")
     private String lastName;
 
-    @ApiModelProperty(value = "password")
+    @Schema(description = "密码(加密存储)", 
+            example = "$2a$10$N9qo8uLOickgx2ZMRZoMy...", 
+            accessMode = Schema.AccessMode.WRITE_ONLY,
+            minLength = 60, 
+            maxLength = 100)
     private String password;
 
-    @ApiModelProperty(value = "phone")
+    @Schema(description = "手机号码", example = "13800138000", maxLength = 20)
     private String phone;
 
     @NotNull
-    @ApiModelProperty(value = "enabled")
+    @Schema(description = "账号是否启用", example = "true", defaultValue = "true")
     private Boolean enabled;
 
     public String getUsername() {

@@ -8,6 +8,7 @@ import com.example.flightapi.User.dto.UserRequestDTO;
 import com.example.flightapi.User.repository.UserRepository;
 import com.example.flightapi.User.service.UserService;
 import com.example.flightapi.common.utils.*;
+import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -102,14 +103,7 @@ public class UserServiceImpl implements UserService {
             onlineUserService.kickOutForUsername(resources.getEmail());
         }
 
-        user.setUserId(resources.getUserId());
-        user.setNickName(resources.getNickName());
-        user.setCountry(resources.getCountry());
-        user.setEmail(resources.getEmail());
-        user.setFirstName(resources.getFirstName());
-        user.setLastName(resources.getLastName());
-        user.setPhone(resources.getPhone());
-        user.setEnabled(resources.getEnabled());
+        BeanUtils.copyProperties(resources, user, "password");
         userRepository.save(user);
         // 清除缓存
         delCaches(user.getId(), user.getEmail());

@@ -123,6 +123,10 @@ public class SpringSecurityConfig {
                     authorize.requestMatchers(
                             anonymousUrls.get(RequestMethodEnum.ALL.getType()).toArray(new String[0])
                     ).permitAll();
+                    // Swagger相关资源放行
+                    authorize.requestMatchers("/swagger-ui/**").permitAll();
+                    authorize.requestMatchers("/swagger-resources/**").permitAll();
+                    authorize.requestMatchers("/v3/api-docs/**").permitAll();
                     // 其他的都需要认证
                     authorize.anyRequest().authenticated();
                 })

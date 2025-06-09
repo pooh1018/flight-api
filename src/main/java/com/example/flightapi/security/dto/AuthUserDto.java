@@ -1,6 +1,6 @@
 package com.example.flightapi.security.dto;
 
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,16 +14,16 @@ import jakarta.validation.constraints.NotBlank;
 public class AuthUserDto {
 
     @NotBlank
-    @ApiModelProperty(value = "邮箱")
+    @Schema(description = "邮箱", example = "user@example.com")
     private String email;
 
     @NotBlank
-    @ApiModelProperty(value = "密码")
+    @Schema(description = "密码", example = "password123")
     private String password;
 
-//    @ApiModelProperty(value = "验证码")
+//    @Schema(description = "验证码", example = "123456")
 //    private String code;
 
-//    @ApiModelProperty(value = "验证码的key")
+//    @Schema(description = "验证码的key", example = "uuid-12345")
 //    private String uuid = "";
 }

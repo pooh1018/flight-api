@@ -6,8 +6,10 @@ import com.example.flightapi.common.config.properties.RsaProperties;
 import com.example.flightapi.common.exception.handler.ApiResult;
 import com.example.flightapi.common.utils.MessageUtils;
 import com.example.flightapi.common.utils.RsaUtils;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import com.example.flightapi.common.annotation.rest.AnonymousDeleteMapping;
@@ -42,7 +44,7 @@ import java.util.Map;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@Api(tags = "系统：系统授权接口")
+@Tag(name = "System: Authentication APIs")
 @RequestMapping("/auth")
 public class AuthController {
 
@@ -56,7 +58,12 @@ public class AuthController {
     private final UserDetailService userDetailsService;
     private final UserService userService;
 
-    @ApiOperation("登录授权")
+    @Operation(summary = "User login", description = "Authenticate user credentials and return JWT token")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Login successful"),
+        @ApiResponse(responseCode = "400", description = "Invalid username or password"),
+        @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
     @AnonymousPostMapping(value = "/login")
     public ApiResult login(@Validated @RequestBody AuthUserDto authUser, HttpServletRequest request) throws Exception {
         // 密码解密
@@ -86,7 +93,12 @@ public class AuthController {
         return ApiResult.success(authInfo);
     }
 
-    @ApiOperation("注册用户")
+    @Operation(summary = "User registration", description = "Register a new user account")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Registration successful"),
+        @ApiResponse(responseCode = "400", description = "Invalid user information"),
+        @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
     @PostMapping(value = "/register")
     public ApiResult register(@Validated @RequestBody User resources) throws Exception {
         String passWord = RsaUtils.decryptByPrivateKey(RsaProperties.privateKey, resources.getPassword());
@@ -95,14 +107,24 @@ public class AuthController {
         return ApiResult.success();
     }
 
-    @ApiOperation("获取用户信息")
+    @Operation(summary = "Get user info", description = "Retrieve authenticated user's information")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "User info retrieved successfully"),
+        @ApiResponse(responseCode = "401", description = "Unauthorized access"),
+        @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
     @GetMapping(value = "/info")
     public ApiResult getUserInfo() {
         JwtUserDto jwtUser = (JwtUserDto) SecurityUtils.getCurrentUser();
         return ApiResult.success(jwtUser);
     }
 
-    @ApiOperation("退出登录")
+    @Operation(summary = "User logout", description = "Invalidate user's authentication token")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Logout successful"),
+        @ApiResponse(responseCode = "401", description = "Unauthorized access"),
+        @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
     @AnonymousDeleteMapping(value = "/logout")
     public ApiResult logout(HttpServletRequest request) {
         String token = tokenProvider.getToken(request);

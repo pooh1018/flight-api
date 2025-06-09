@@ -3,9 +3,10 @@ package com.example.flightapi.Booking.controller;
 import com.example.flightapi.Booking.entity.Booking;
 import com.example.flightapi.Booking.service.BookingService;
 import com.example.flightapi.common.exception.handler.ApiResult;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,7 +14,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-@Api(tags = "Booking Management", description = "Operations pertaining to flight bookings")
+@Tag(name = "Booking Management", description = "Operations pertaining to flight bookings")
 @RestController
 @RequestMapping("/bookings")
 public class BookingController {
@@ -21,120 +22,106 @@ public class BookingController {
     @Autowired
     private BookingService bookingService;
 
-    @ApiOperation(value = "Create a new booking", response = Booking.class)
+    @Operation(summary = "Create a new booking", description = "Creates a new booking for a flight")
     @PostMapping
     public ApiResult createBooking(
-            @ApiParam(value = "Booking object that needs to be created", required = true)
+            @Parameter(description = "Booking object that needs to be created", required = true)
             @RequestBody Booking resources)  {
         Booking booking = new Booking();
-        booking.setFlightId(resources.getFlightId());
-        booking.setPassengers(resources.getPassengers());
-        booking.setTotalPrice(resources.getTotalPrice());
-        booking.setStatus(resources.getStatus());
-        booking.setBookingTime(LocalDateTime.now());
-        booking.setPaymentMethod(resources.getPaymentMethod());
-        booking.setContactEmail(resources.getContactEmail());
-        booking.setContactPhone(resources.getContactPhone());
+        BeanUtils.copyProperties(resources, booking);
         bookingService.createBooking(booking);
         return ApiResult.success();
     }
 
-    @ApiOperation(value = "Get booking by ID", response = Booking.class)
+    @Operation(summary = "Get booking by ID", description = "Retrieves a specific booking by its ID")
     @GetMapping("/{id}")
     public ApiResult getBookingById(
-            @ApiParam(value = "ID of the booking to retrieve", required = true)
+            @Parameter(description = "ID of the booking to retrieve", required = true)
             @PathVariable String id) {
         Optional<Booking> booking = bookingService.getBookingById(id);
-        return booking.map(ApiResult::success).orElseGet(() -> ApiResult.success(null));
+        return ApiResult.success(booking.map(ApiResult::success).orElseGet(() -> ApiResult.success(null)));
     }
 
-    @ApiOperation(value = "Get booking by ID and email", response = Booking.class)
+    @Operation(summary = "Get booking by ID and email", description = "Retrieves a booking based on both ID and email")
     @GetMapping("/{id}/email/{email}")
     public ApiResult getBookingByIdAndEmail(
-            @ApiParam(value = "ID of the booking to retrieve", required = true)
+            @Parameter(description = "ID of the booking to retrieve", required = true)
             @PathVariable String id,
-            @ApiParam(value = "Contact email associated with the booking", required = true)
+            @Parameter(description = "Contact email associated with the booking", required = true)
             @PathVariable String email) {
         Optional<Booking> booking = bookingService.getBookingByIdAndEmail(id, email);
-        return booking.map(ApiResult::success).orElseGet(() -> ApiResult.success(null));
+        return ApiResult.success(booking.map(ApiResult::success).orElseGet(() -> ApiResult.success(null)));
     }
 
-    @ApiOperation(value = "Get bookings by flight ID", response = List.class)
+    @Operation(summary = "Get bookings by flight ID", description = "Retrieves all bookings for a specific flight")
     @GetMapping("/flight/{flightId}")
     public ApiResult getBookingsByFlightId(
-            @ApiParam(value = "ID of the flight to retrieve bookings for", required = true)
+            @Parameter(description = "ID of the flight to retrieve bookings for", required = true)
             @PathVariable String flightId) {
         return ApiResult.success(bookingService.getBookingsByFlightId(flightId));
     }
 
-    @ApiOperation(value = "Get bookings by status", response = List.class)
+    @Operation(summary = "Get bookings by status", description = "Retrieves all bookings with a specific status")
     @GetMapping("/status/{status}")
     public ApiResult getBookingsByStatus(
-            @ApiParam(value = "Status of bookings to retrieve (e.g. CONFIRMED, CANCELLED)", required = true)
+            @Parameter(description = "Status of bookings to retrieve (e.g. CONFIRMED, CANCELLED)", required = true)
             @PathVariable String status) {
         return ApiResult.success(bookingService.getBookingsByStatus(status));
     }
 
-    @ApiOperation(value = "Get bookings by contact email", response = List.class)
+    @Operation(summary = "Get bookings by contact email", description = "Retrieves all bookings associated with a specific email")
     @GetMapping("/email/{email}")
     public ApiResult getBookingsByEmail(
-            @ApiParam(value = "Contact email associated with bookings", required = true)
+            @Parameter(description = "Contact email associated with bookings", required = true)
             @PathVariable String email) {
         return ApiResult.success(bookingService.getBookingsByEmail(email));
     }
 
-    @ApiOperation(value = "Get bookings within a date-time range", response = List.class)
+    @Operation(summary = "Get bookings within a date-time range", description = "Retrieves all bookings between specified start and end times")
     @GetMapping("/date-range")
     public ApiResult getBookingsByDateRange(
-            @ApiParam(value = "Start date-time of range (ISO format)", required = true)
+            @Parameter(description = "Start date-time of range (ISO format)", required = true)
             @RequestParam LocalDateTime start,
-            @ApiParam(value = "End date-time of range (ISO format)", required = true)
+            @Parameter(description = "End date-time of range (ISO format)", required = true)
             @RequestParam LocalDateTime end) {
         return ApiResult.success(bookingService.getBookingsByDateRange(start, end));
     }
 
-    @ApiOperation(value = "Get all bookings", response = List.class)
+    @Operation(summary = "Get all bookings", description = "Retrieves a list of all bookings")
     @GetMapping
     public ApiResult getAllBookings() {
         return ApiResult.success(bookingService.getAllBookings());
     }
 
-    @ApiOperation(value = "Cancel a booking by ID (marks as cancelled)")
+    @Operation(summary = "Cancel a booking by ID", description = "Marks a booking as cancelled without deleting it")
     @PutMapping("/{id}/cancel")
     public ApiResult cancelBooking(
-            @ApiParam(value = "ID of the booking to cancel", required = true)
+            @Parameter(description = "ID of the booking to cancel", required = true)
             @PathVariable String id) {
         bookingService.cancelBooking(id);
         return ApiResult.success();
     }
 
-    @ApiOperation(value = "Update a booking by ID", response = Booking.class)
+    @Operation(summary = "Update a booking by ID", description = "Updates an existing booking with new details")
     @PutMapping("/{id}")
     public ApiResult updateBooking(
-            @ApiParam(value = "ID of the booking to update", required = true)
+            @Parameter(description = "ID of the booking to update", required = true)
             @PathVariable String id,
-            @ApiParam(value = "Updated booking details", required = true)
+            @Parameter(description = "Updated booking details", required = true)
             @RequestBody Booking resources) {
         Optional<Booking> bookingOpt = bookingService.getBookingById(id);
         if (bookingOpt.isPresent()) {
             Booking booking = bookingOpt.get();
-            booking.setFlightId(resources.getFlightId());
-            booking.setPassengers(resources.getPassengers());
-            booking.setTotalPrice(resources.getTotalPrice());
-            booking.setStatus(resources.getStatus());
-            booking.setBookingTime(resources.getBookingTime());
-            booking.setPaymentMethod(resources.getPaymentMethod());
-            booking.setContactEmail(resources.getContactEmail());
-            booking.setContactPhone(resources.getContactPhone());
+            BeanUtils.copyProperties(resources, booking);
             return ApiResult.success(bookingService.updateBooking(booking));
         }
         return ApiResult.success(null);
     }
 
-    @ApiOperation(value = "Permanently delete a booking by ID")
+    @Operation(summary = "Permanently delete a booking by ID", description = "Removes a booking from the system completely")
     @DeleteMapping("/{id}")
     public ApiResult deleteBooking(
-            @ApiParam(value = "ID of the booking to permanently delete", required = true)
+            @Parameter(description = "ID of the booking to permanently delete", required = true)
             @PathVariable String id) {
         bookingService.deleteBooking(id);
         return ApiResult.success();

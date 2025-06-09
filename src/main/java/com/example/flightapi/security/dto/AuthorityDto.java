@@ -1,6 +1,6 @@
 package com.example.flightapi.security.dto;
 
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,6 +15,6 @@ import org.springframework.security.core.GrantedAuthority;
 @AllArgsConstructor
 public class AuthorityDto implements GrantedAuthority {
 
-    @ApiModelProperty(value = "角色名")
+    @Schema(description = "角色名", example = "admin")
     private String authority = "admin";
 }
