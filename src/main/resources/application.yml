@@ -3,6 +3,18 @@ server:
 
 #配置数据源
 spring:
+  #  nacos配置中心
+  application:
+    name: flight-api
+  cloud:
+    nacos:
+      discovery:
+        server-addr: ${NACOS_SERVER_ADDR:127.0.0.1:8848}
+        file-extension: yml
+        namespace: ${NACOS_NAMESPACE:b4b788b4-a6d1-4405-bf41-6db5a0a1a8ff}
+        username: ${NACOS_USERNAME:luheng}
+        password: ${NACOS_PASSWORD:luheng123}
+
   data:
     mongodb:
       uri: ${MONGO_DATABASE_URL:mongodb://admin_user:123456@localhost:27017/flightsystem}
