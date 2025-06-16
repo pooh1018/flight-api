@@ -239,16 +239,23 @@ public class RedisUtils {
         if (value == null) {
             return null;
         }
-        if (value instanceof List<?>) {
-            List<?> list = (List<?>) value;
-            // 检查每个元素是否为指定类型
-            if (list.stream().allMatch(clazz::isInstance)) {
-                return list.stream().map(clazz::cast).collect(Collectors.toList());
+        try {
+            if (value instanceof List<?>) {
+                List<?> list = (List<?>) value;
+                return list.stream()
+                    .map(item -> {
+                        // 使用FastJson进行类型转换
+                        String jsonString = com.alibaba.fastjson.JSON.toJSONString(item);
+                        return com.alibaba.fastjson.JSON.parseObject(jsonString, clazz);
+                    })
+                    .collect(Collectors.toList());
             }
+            return null;
+        } catch (Exception e) {
+            log.error("Failed to convert Redis value to List<{}>: {}", clazz.getSimpleName(), e.getMessage());
+            return null;
         }
-        return null;
     }
-
 
     /**
      * 普通缓存获取
@@ -292,7 +299,10 @@ public class RedisUtils {
         int attempt = 0;
         while (attempt < 3) {
             try {
-                redisTemplate.opsForValue().set(key, value);
+                // 使用FastJson序列化对象，确保与getList方法的反序列化一致
+                String jsonString = com.alibaba.fastjson.JSON.toJSONString(value);
+                Object jsonObject = com.alibaba.fastjson.JSON.parse(jsonString);
+                redisTemplate.opsForValue().set(key, jsonObject);
                 return true;
             } catch (Exception e) {
                 attempt++;
@@ -313,7 +323,10 @@ public class RedisUtils {
     public boolean set(String key, Object value, long time) {
         try {
             if (time > 0) {
-                redisTemplate.opsForValue().set(key, value, time, TimeUnit.SECONDS);
+                // 使用FastJson序列化对象，确保与getList方法的反序列化一致
+                String jsonString = com.alibaba.fastjson.JSON.toJSONString(value);
+                Object jsonObject = com.alibaba.fastjson.JSON.parse(jsonString);
+                redisTemplate.opsForValue().set(key, jsonObject, time, TimeUnit.SECONDS);
             } else {
                 set(key, value);
             }

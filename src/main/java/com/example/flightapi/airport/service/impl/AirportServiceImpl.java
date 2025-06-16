@@ -41,7 +41,6 @@ public class AirportServiceImpl implements AirportService {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public List<Airport> getAllAirports() {
         String key = CacheKey.DICT_NAME + DictionaryProperties.airportCityList;
         // 先从Redis缓存中获取
