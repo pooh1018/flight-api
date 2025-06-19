@@ -47,48 +47,51 @@ public class GlobalExceptionHandler {
      * BadCredentialsException
      */
     @ExceptionHandler(BadCredentialsException.class)
-    public ResponseEntity<ApiResult> badCredentialsException(BadCredentialsException e){
+    public ApiResult badCredentialsException(BadCredentialsException e){
         // 打印堆栈信息
         String message = messageUtils.getMessage("user.credentials.bad").equals(e.getMessage()) ? messageUtils.getMessage("user.password.error") : e.getMessage();
         log.error(message);
-        return buildResponseEntity(ApiResult.failMessage(message));
+//        return buildResponseEntity(ApiResult.failMessage(message));
+        return ApiResult.failMessage(message);
     }
 
     /**
      * 处理自定义异常
      */
 	@ExceptionHandler(value = SystemException.class)
-	public ResponseEntity<ApiResult> SystemException(SystemException e) {
+	public ApiResult SystemException(SystemException e) {
         // 打印堆栈信息
         log.error(ThrowableUtil.getStackTrace(e));
-        return buildResponseEntity(ApiResult.fail(e.getCode(),e.getMessage()));
+        return ApiResult.fail(e.getCode(),e.getMessage());
 	}
 
     /**
      * 处理 EntityExist
      */
     @ExceptionHandler(value = EntityExistException.class)
-    public ResponseEntity<ApiResult> entityExistException(EntityExistException e) {
+    public ApiResult entityExistException(EntityExistException e) {
         // 打印堆栈信息
 //        log.error(ThrowableUtil.getStackTrace(e));
-        return buildResponseEntity(ApiResult.fail(e.getMessage()));
+//        return buildResponseEntity(ApiResult.fail(e.getMessage()));
+        return ApiResult.failMessage(e.getMessage());
     }
 
     /**
      * 处理 EntityNotFound
      */
     @ExceptionHandler(value = EntityNotFoundException.class)
-    public ResponseEntity<ApiResult> entityNotFoundException(EntityNotFoundException e) {
+    public ApiResult entityNotFoundException(EntityNotFoundException e) {
         // 打印堆栈信息
 //        log.error(ThrowableUtil.getStackTrace(e));
-        return buildResponseEntity(ApiResult.fail(String.valueOf(HttpStatus.NOT_FOUND.value()), e.getMessage()));
+//        return buildResponseEntity(ApiResult.fail(String.valueOf(HttpStatus.NOT_FOUND.value()), e.getMessage()));
+        return ApiResult.failMessage(e.getMessage());
     }
 
     /**
      * 处理所有接口数据验证异常
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ApiResult> handleMethodArgumentNotValidException(MethodArgumentNotValidException e){
+    public ApiResult handleMethodArgumentNotValidException(MethodArgumentNotValidException e){
         // 打印堆栈信息
         log.error(ThrowableUtil.getStackTrace(e));
         ObjectError objectError = e.getBindingResult().getAllErrors().get(0);
@@ -96,85 +99,90 @@ public class GlobalExceptionHandler {
         if (objectError instanceof FieldError) {
             message = ((FieldError) objectError).getField() + ": " + message;
         }
-        return buildResponseEntity(ApiResult.failMessage(message));
+//        return buildResponseEntity(ApiResult.failMessage(message));
+        return ApiResult.fail(String.valueOf(HttpStatus.BAD_REQUEST.value()), message);
     }
 
     /**
      * 处理通用认证异常
      */
     @ExceptionHandler(AuthenticationException.class)
-    public ResponseEntity<ApiResult> handleAuthenticationException(AuthenticationException e) {
+    public ApiResult handleAuthenticationException(AuthenticationException e) {
         // 打印堆栈信息
 //        log.error(ThrowableUtil.getStackTrace(e));
         String message = messageUtils.getMessage("user.authentication.failed");
-        return buildResponseEntity(ApiResult.fail(String.valueOf(HttpStatus.UNAUTHORIZED.value()), message));
+//        return buildResponseEntity(ApiResult.fail(String.valueOf(HttpStatus.UNAUTHORIZED.value()), message));
+        return ApiResult.fail(String.valueOf(HttpStatus.UNAUTHORIZED.value()), message);
     }
 
     /**
      * 处理访问权限异常
      */
     @ExceptionHandler(AccessDeniedException.class)
-    public ResponseEntity<ApiResult> handleAccessDeniedException(AccessDeniedException e) {
+    public ApiResult handleAccessDeniedException(AccessDeniedException e) {
         // 打印堆栈信息
 //        log.error(ThrowableUtil.getStackTrace(e));
         String message = messageUtils.getMessage("user.access.denied");
-        return buildResponseEntity(ApiResult.fail(String.valueOf(HttpStatus.FORBIDDEN.value()), message));
-//        return ApiResult.failMessage(message);
+//        return buildResponseEntity(ApiResult.fail(String.valueOf(HttpStatus.FORBIDDEN.value()), message));
+        return ApiResult.failMessage(message);
     }
 
     /**
      * 处理用户不存在异常
      */
     @ExceptionHandler(UsernameNotFoundException.class)
-    public ResponseEntity<ApiResult> handleUsernameNotFoundException(UsernameNotFoundException e) {
+    public ApiResult handleUsernameNotFoundException(UsernameNotFoundException e) {
         // 打印堆栈信息
 //        log.error(ThrowableUtil.getStackTrace(e));
         String message = messageUtils.getMessage("user.not.found");
-        return buildResponseEntity(ApiResult.fail(String.valueOf(HttpStatus.UNAUTHORIZED.value()), message));
+//        return buildResponseEntity(ApiResult.fail(String.valueOf(HttpStatus.UNAUTHORIZED.value()), message));
+        return ApiResult.fail(String.valueOf(HttpStatus.UNAUTHORIZED.value()), message);
     }
 
     /**
      * 处理账户过期异常
      */
     @ExceptionHandler(AccountExpiredException.class)
-    public ResponseEntity<ApiResult> handleAccountExpiredException(AccountExpiredException e) {
+    public ApiResult handleAccountExpiredException(AccountExpiredException e) {
         // 打印堆栈信息
         log.error(ThrowableUtil.getStackTrace(e));
         String message = messageUtils.getMessage("user.account.expired");
-        return buildResponseEntity(ApiResult.fail(String.valueOf(HttpStatus.UNAUTHORIZED.value()), message));
+        return ApiResult.fail(String.valueOf(HttpStatus.UNAUTHORIZED.value()), message);
     }
 
     /**
      * 处理账户锁定异常
      */
     @ExceptionHandler(LockedException.class)
-    public ResponseEntity<ApiResult> handleLockedException(LockedException e) {
+    public ApiResult handleLockedException(LockedException e) {
         // 打印堆栈信息
 //        log.error(ThrowableUtil.getStackTrace(e));
         String message = messageUtils.getMessage("user.account.locked");
-        return buildResponseEntity(ApiResult.fail(String.valueOf(HttpStatus.UNAUTHORIZED.value()), message));
+//        return buildResponseEntity(ApiResult.fail(String.valueOf(HttpStatus.UNAUTHORIZED.value()), message));
+        return ApiResult.failMessage(message);
     }
 
     /**
      * 处理账户禁用异常
      */
     @ExceptionHandler(DisabledException.class)
-    public ResponseEntity<ApiResult> handleDisabledException(DisabledException e) {
+    public ApiResult handleDisabledException(DisabledException e) {
         // 打印堆栈信息
 //        log.error(ThrowableUtil.getStackTrace(e));
         String message = messageUtils.getMessage("user.disabled");
-        return buildResponseEntity(ApiResult.fail(String.valueOf(HttpStatus.UNAUTHORIZED.value()), message));
+//        return buildResponseEntity(ApiResult.fail(String.valueOf(HttpStatus.UNAUTHORIZED.value()), message));
+        return ApiResult.failMessage(message);
     }
 
     /**
      * 处理对象状态不合法异常
      */
     @ExceptionHandler(IllegalStateException.class)
-    public ResponseEntity<ApiResult> handleIllegalStateException(IllegalStateException e) {
+    public ApiResult handleIllegalStateException(IllegalStateException e) {
         // 打印堆栈信息
         log.error(ThrowableUtil.getStackTrace(e));
         // 直接使用异常的消息，因为CabinClassServiceImpl中的消息已经很明确
-        return buildResponseEntity(ApiResult.fail(String.valueOf(HttpStatus.CONFLICT.value()), e.getMessage()));
+        return ApiResult.fail(String.valueOf(HttpStatus.CONFLICT.value()), e.getMessage());
     }
 
     /**
