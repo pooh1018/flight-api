@@ -68,22 +68,20 @@ public class GlobalExceptionHandler {
      * 处理 EntityExist
      */
     @ExceptionHandler(value = EntityExistException.class)
-    public ApiResult entityExistException(EntityExistException e) {
+    public ResponseEntity<ApiResult> entityExistException(EntityExistException e) {
         // 打印堆栈信息
 //        log.error(ThrowableUtil.getStackTrace(e));
-//        return buildResponseEntity(ApiResult.fail(e.getMessage()));
-        return ApiResult.failMessage(e.getMessage());
+        return buildResponseEntity(ApiResult.fail(e.getMessage()));
     }
 
     /**
      * 处理 EntityNotFound
      */
     @ExceptionHandler(value = EntityNotFoundException.class)
-    public ApiResult entityNotFoundException(EntityNotFoundException e) {
+    public ResponseEntity<ApiResult> entityNotFoundException(EntityNotFoundException e) {
         // 打印堆栈信息
 //        log.error(ThrowableUtil.getStackTrace(e));
-//        return buildResponseEntity(ApiResult.fail(String.valueOf(HttpStatus.NOT_FOUND.value()), e.getMessage()));
-        return ApiResult.failMessage(e.getMessage());
+        return buildResponseEntity(ApiResult.fail(String.valueOf(HttpStatus.NOT_FOUND.value()), e.getMessage()));
     }
 
     /**
@@ -105,36 +103,34 @@ public class GlobalExceptionHandler {
      * 处理通用认证异常
      */
     @ExceptionHandler(AuthenticationException.class)
-    public ApiResult handleAuthenticationException(AuthenticationException e) {
+    public ResponseEntity<ApiResult> handleAuthenticationException(AuthenticationException e) {
         // 打印堆栈信息
 //        log.error(ThrowableUtil.getStackTrace(e));
         String message = messageUtils.getMessage("user.authentication.failed");
-//        return buildResponseEntity(ApiResult.fail(String.valueOf(HttpStatus.UNAUTHORIZED.value()), message));
-        return ApiResult.fail(String.valueOf(HttpStatus.UNAUTHORIZED.value()), message);
+        return buildResponseEntity(ApiResult.fail(String.valueOf(HttpStatus.UNAUTHORIZED.value()), message));
     }
 
     /**
      * 处理访问权限异常
      */
     @ExceptionHandler(AccessDeniedException.class)
-    public ApiResult handleAccessDeniedException(AccessDeniedException e) {
+    public ResponseEntity<ApiResult> handleAccessDeniedException(AccessDeniedException e) {
         // 打印堆栈信息
 //        log.error(ThrowableUtil.getStackTrace(e));
         String message = messageUtils.getMessage("user.access.denied");
-//        return buildResponseEntity(ApiResult.fail(String.valueOf(HttpStatus.FORBIDDEN.value()), message));
-        return ApiResult.failMessage(message);
+        return buildResponseEntity(ApiResult.fail(String.valueOf(HttpStatus.FORBIDDEN.value()), message));
+//        return ApiResult.failMessage(message);
     }
 
     /**
      * 处理用户不存在异常
      */
     @ExceptionHandler(UsernameNotFoundException.class)
-    public ApiResult handleUsernameNotFoundException(UsernameNotFoundException e) {
+    public ResponseEntity<ApiResult> handleUsernameNotFoundException(UsernameNotFoundException e) {
         // 打印堆栈信息
 //        log.error(ThrowableUtil.getStackTrace(e));
         String message = messageUtils.getMessage("user.not.found");
-//        return buildResponseEntity(ApiResult.fail(String.valueOf(HttpStatus.UNAUTHORIZED.value()), message));
-        return ApiResult.fail(String.valueOf(HttpStatus.UNAUTHORIZED.value()), message);
+        return buildResponseEntity(ApiResult.fail(String.valueOf(HttpStatus.UNAUTHORIZED.value()), message));
     }
 
     /**
@@ -152,24 +148,33 @@ public class GlobalExceptionHandler {
      * 处理账户锁定异常
      */
     @ExceptionHandler(LockedException.class)
-    public ApiResult handleLockedException(LockedException e) {
+    public ResponseEntity<ApiResult> handleLockedException(LockedException e) {
         // 打印堆栈信息
 //        log.error(ThrowableUtil.getStackTrace(e));
         String message = messageUtils.getMessage("user.account.locked");
-//        return buildResponseEntity(ApiResult.fail(String.valueOf(HttpStatus.UNAUTHORIZED.value()), message));
-        return ApiResult.failMessage(message);
+        return buildResponseEntity(ApiResult.fail(String.valueOf(HttpStatus.UNAUTHORIZED.value()), message));
     }
 
     /**
      * 处理账户禁用异常
      */
     @ExceptionHandler(DisabledException.class)
-    public ApiResult handleDisabledException(DisabledException e) {
+    public ResponseEntity<ApiResult> handleDisabledException(DisabledException e) {
         // 打印堆栈信息
 //        log.error(ThrowableUtil.getStackTrace(e));
         String message = messageUtils.getMessage("user.disabled");
-//        return buildResponseEntity(ApiResult.fail(String.valueOf(HttpStatus.UNAUTHORIZED.value()), message));
-        return ApiResult.failMessage(message);
+        return buildResponseEntity(ApiResult.fail(String.valueOf(HttpStatus.UNAUTHORIZED.value()), message));
+    }
+
+    /**
+     * 处理对象状态不合法异常
+     */
+    @ExceptionHandler(IllegalStateException.class)
+    public ResponseEntity<ApiResult> handleIllegalStateException(IllegalStateException e) {
+        // 打印堆栈信息
+        log.error(ThrowableUtil.getStackTrace(e));
+        // 直接使用异常的消息，因为CabinClassServiceImpl中的消息已经很明确
+        return buildResponseEntity(ApiResult.fail(String.valueOf(HttpStatus.CONFLICT.value()), e.getMessage()));
     }
 
     /**

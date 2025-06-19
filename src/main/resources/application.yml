@@ -1,23 +1,21 @@
 server:
-  port: 8001
+  port: ${SERVER_PORT:8001}
+  address: ${SERVER_ADDRESS:0.0.0.0}
+  tomcat:
+    threads:
+      max: 200
+    max-connections: 8192
+    accept-count: 100
+    connection-timeout: 5000
 
 #配置数据源
 spring:
-  #  nacos配置中心
   application:
     name: flight-api
-  cloud:
-    nacos:
-      discovery:
-        server-addr: ${NACOS_SERVER_ADDR:127.0.0.1:8848}
-        file-extension: yml
-        namespace: ${NACOS_NAMESPACE:b4b788b4-a6d1-4405-bf41-6db5a0a1a8ff}
-        username: ${NACOS_USERNAME:luheng}
-        password: ${NACOS_PASSWORD:luheng123}
-
   data:
     mongodb:
-      uri: ${MONGO_DATABASE_URL:mongodb://admin_user:123456@localhost:27017/flightsystem}
+#      uri: ${MONGO_DATABASE_URL:mongodb://admin_user:123456@localhost:27017/flightsystem}
+      uri: ${MONGO_DATABASE_URL:mongodb://admin_user:flight20241qazxsw21t@47.109.24.42:27017/flightsystem}
 #      host: 54.206.76.143  #共有IP
 #      host: 172.31.24.68  #私有IP
 #      port: 27017
@@ -28,7 +26,7 @@ spring:
     redis:
       #数据库索引
       database: 2
-      host: ${REDIS_HOST:127.0.0.1}
+      host: ${REDIS_HOST:8.137.95.47}
 #      host: 3.24.214.163  #共有IP
 #      host: 172.31.32.203  #私有IP
       port: 6379
@@ -64,7 +62,8 @@ spring:
     file: ./FlightApiApplication.pid
 
   profiles:
-    active: ${LOG_ACTIVE:dev}
+#    active: ${LOG_ACTIVE:dev}
+    active: ${SPRING_PROFILES_ACTIVE:dev}
 #
 #logging:
 #  level:
@@ -145,10 +144,11 @@ cors:
   # 3. 特定IP的多个端口: http://192.168.1.100:8011, http://192.168.1.100:8012
   # 4. *://*:8021
   # 5. 本地开发环境: http://localhost:*
-  allowed-origin-patterns: ${CORS_ALLOWED_ORIGIN_PATTERNS:http://localhost:8011,*://*:80}
+  allowed-origin-patterns: ${CORS_ALLOWED_ORIGIN_PATTERNS:http://8.137.95.47:*,http://47.109.24.42:*,http://localhost:8011,http://*:80}
   allowed-methods: GET,POST,PUT,DELETE,OPTIONS,PATCH
   allowed-headers: "*"  #Authorization,Content-Type,X-Requested-With,Accept,Origin,Access-Control-Request-Method,Access-Control-Request-Headers
   max-age: 300
+  allow-credentials: ${CORS_ALLOWED_CREDENTIALS:true}
 
 #密码加密传输，前端公钥加密，后端私钥解密
 rsa:

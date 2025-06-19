@@ -17,16 +17,16 @@ import org.springframework.context.annotation.Configuration;
 @AutoConfigureBefore(RedisAutoConfiguration.class)
 public class RedissonConfiguration {
 
-    @Value("${spring.data.redis.host}")
+    @Value("${spring.data.redis.host:127.0.0.1}")
     private String redisHost;
 
-    @Value("${spring.data.redis.port}")
+    @Value("${spring.data.redis.port:6379}")
     private int redisPort;
 
-    @Value("${spring.data.redis.database}")
+    @Value("${spring.data.redis.database:2}")
     private int redisDatabase;
 
-    @Value("${spring.data.redis.password}")
+    @Value("${spring.data.redis.password:123456}")
     private String redisPassword;
 
     @Value("${spring.data.redis.timeout:5000}")
