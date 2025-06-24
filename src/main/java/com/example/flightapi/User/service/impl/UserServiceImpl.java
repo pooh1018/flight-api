@@ -79,8 +79,21 @@ public class UserServiceImpl implements UserService {
         if (userRepository.findByPhone(resources.getPhone()) != null) {
             throw new EntityExistException(User.class, "phone", resources.getPhone());
         }
+
+        // 获取下一个用户ID
+        int nextUserId = getNextUserId();
+        resources.setUserId(nextUserId);
         resources.setEnabled(true);
         userRepository.save(resources);
+    }
+
+    private int getNextUserId() {
+        // 查找当前最大用户ID
+        User lastUser = userRepository.findTopByOrderByUserIdDesc();
+        int nextId = (lastUser != null && lastUser.getUserId() >= 1000000000)
+            ? lastUser.getUserId() + 1
+            : 1000000000;
+        return nextId;
     }
 
     @Override

@@ -4,10 +4,8 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import jakarta.validation.constraints.Min;
+import lombok.*;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
@@ -26,8 +24,9 @@ public class User {
     @Schema(description = "主键ID", accessMode = Schema.AccessMode.READ_ONLY)
     private String id;
 
-    @Schema(description = "用户ID", example = "1001", required = true)
+    @Schema(description = "用户ID", example = "1000000000", required = true)
     @Field("user_id")
+    @Min(value = 1000000000, message = "用户ID必须大于等于1000000000")
     private int userId;
 
     @Schema(description = "用户昵称", example = "飞行达人", maxLength = 50)
@@ -37,9 +36,9 @@ public class User {
     @Schema(description = "国家/地区代码", example = "CN", maxLength = 2)
     private String country;
 
-    @Schema(description = "用户邮箱(登录账号)", 
-            example = "user@example.com", 
-            required = true, 
+    @Schema(description = "用户邮箱(登录账号)",
+            example = "user@example.com",
+            required = true,
             format = "email")
     private String email;
 
@@ -51,10 +50,10 @@ public class User {
     @Field("last_name")
     private String lastName;
 
-    @Schema(description = "密码(加密存储)", 
-            example = "$2a$10$N9qo8uLOickgx2ZMRZoMy...", 
+    @Schema(description = "密码(加密存储)",
+            example = "$2a$10$N9qo8uLOickgx2ZMRZoMy...",
             accessMode = Schema.AccessMode.WRITE_ONLY,
-            minLength = 60, 
+            minLength = 60,
             maxLength = 100)
     private String password;
 

@@ -49,4 +49,6 @@ public interface UserRepository extends MongoRepository<User, String> {
             }
         });
     }
+    
+    User findTopByOrderByUserIdDesc();
 }
