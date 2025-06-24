@@ -223,7 +223,7 @@ public class UserController {
     }
 
     @Operation(
-        summary = "Reset password via email",
+        summary = "Reset password by email",
         description = "User resets password through email verification, requires providing email and new password",
         responses = {
             @ApiResponse(responseCode = "200", description = "Password reset successful"),

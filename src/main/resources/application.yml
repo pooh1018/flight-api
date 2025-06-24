@@ -62,7 +62,6 @@ spring:
     file: ./FlightApiApplication.pid
 
   profiles:
-#    active: ${LOG_ACTIVE:dev}
     active: ${SPRING_PROFILES_ACTIVE:dev}
 #
 #logging:
@@ -118,8 +117,8 @@ security:
     get:
       # 允许放开接口
       - "/"          #API URL首页
-      - "/flights"
-      - "/airports"
+      - "/flights/**"
+      - "/airports/**"
       - "/users/findByEmail"
       # swagger，静态资源等等
       - "/api/docs"
@@ -131,6 +130,7 @@ security:
       - "/auth/login"
       - "/auth/register"
       - "/users/resetPwdByEmail"
+      - "/flights/with-cabins/search/paged"
     # 所有方法都可匿名访问的接口
     all:
       - "/public/**"
@@ -144,7 +144,7 @@ cors:
   # 3. 特定IP的多个端口: http://192.168.1.100:8011, http://192.168.1.100:8012
   # 4. *://*:8021
   # 5. 本地开发环境: http://localhost:*
-  allowed-origin-patterns: ${CORS_ALLOWED_ORIGIN_PATTERNS:http://8.137.95.47:*,http://47.109.24.42:*,http://localhost:8011,http://*:80}
+  allowed-origin-patterns: ${CORS_ALLOWED_ORIGIN_PATTERNS:http://8.137.95.47:*,http://47.109.24.42:*,http://localhost:8011,http://localhost:8001,http://*:80}
   allowed-methods: GET,POST,PUT,DELETE,OPTIONS,PATCH
   allowed-headers: "*"  #Authorization,Content-Type,X-Requested-With,Accept,Origin,Access-Control-Request-Method,Access-Control-Request-Headers
   max-age: 300

@@ -100,7 +100,7 @@ public class GlobalExceptionHandler {
             message = ((FieldError) objectError).getField() + ": " + message;
         }
 //        return buildResponseEntity(ApiResult.failMessage(message));
-        return ApiResult.fail(String.valueOf(HttpStatus.BAD_REQUEST.value()), message);
+        return ApiResult.failMessage(message);
     }
 
     /**
