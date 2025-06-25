@@ -41,6 +41,20 @@ public class JwtUserDto implements UserDetails {
     }
 
     @JSONField(serialize = false)
+    public int getUserId() {
+        Object userIdObj = user.getUserId();
+
+        // 处理不同类型的userId
+        if (userIdObj instanceof Number) {
+            return ((Number) userIdObj).intValue();
+        } else if (userIdObj instanceof String) {
+            return Integer.parseInt((String) userIdObj);
+        } else {
+            throw new IllegalStateException("JWT中的userId格式无效");
+        }
+    }
+
+    @JSONField(serialize = false)
     @Override
     public boolean isAccountNonExpired() {
         return true;

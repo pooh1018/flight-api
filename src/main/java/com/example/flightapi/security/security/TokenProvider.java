@@ -38,7 +38,8 @@ public class TokenProvider implements InitializingBean {
     private final RedisUtils redisUtils;
     private final SecurityProperties properties;
     public static final String AUTHORITIES_UUID_KEY = "uid";
-    public static final String AUTHORITIES_UID_KEY = "userId";
+    public static final String AUTHORITIES_UID_KEY = "user_Id";
+    public static final String AUTHORITIES_USER_ID_KEY = "user_userId";
 
     @Override
     public void afterPropertiesSet() {
@@ -62,6 +63,8 @@ public class TokenProvider implements InitializingBean {
         Map<String, Object> claims = new HashMap<>(6);
         // 设置用户ID
         claims.put(AUTHORITIES_UID_KEY, user.getUser().getId());
+        // 设置用户ID
+        claims.put(AUTHORITIES_USER_ID_KEY, user.getUser().getUserId());
         // 设置UUID，确保每次Token不一样
         claims.put(AUTHORITIES_UUID_KEY, IdUtil.simpleUUID());
         return jwtBuilder

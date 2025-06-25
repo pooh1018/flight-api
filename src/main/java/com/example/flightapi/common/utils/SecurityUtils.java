@@ -78,7 +78,7 @@ public class SecurityUtils {
      * 获取用户ID
      * @return 系统用户ID
      */
-    public static Long getCurrentUserId() {
+    public static int getCurrentUserId() {
         return getCurrentUserId(getToken());
     }
 
@@ -86,9 +86,37 @@ public class SecurityUtils {
      * 获取用户ID
      * @return 系统用户ID
      */
-    public static Long getCurrentUserId(String token) {
+    public static int getCurrentId(String token) {
         JWT jwt = JWTUtil.parseToken(token);
-        return Long.valueOf(jwt.getPayload("userId").toString());
+        Object userIdObj = jwt.getPayload("user_id");
+
+        // 处理不同类型的userId
+        if (userIdObj instanceof Number) {
+            return ((Number) userIdObj).intValue();
+        } else if (userIdObj instanceof String) {
+            return Integer.parseInt((String) userIdObj);
+        } else {
+            throw new IllegalStateException("JWT中的user_id格式无效");
+        }
+    }
+
+    /**
+     * 获取USER ID
+     * @return USER ID`
+     */
+    public static int getCurrentUserId(String token) {
+        JWT jwt = JWTUtil.parseToken(token);
+        Object userIdObj = jwt.getPayload("user_userId");
+
+        // 处理不同类型的userId
+        if (userIdObj instanceof Number) {
+            return ((Number) userIdObj).intValue();
+        } else if (userIdObj instanceof String) {
+            return Integer.parseInt((String) userIdObj);
+        } else {
+            log.error("无法解析JWT中的userId: {}", userIdObj);
+            throw new IllegalStateException("JWT中的userId格式无效");
+        }
     }
 
     /**
