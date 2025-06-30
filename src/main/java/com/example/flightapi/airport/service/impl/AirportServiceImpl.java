@@ -4,6 +4,7 @@ import cn.hutool.core.collection.CollUtil;
 import com.example.flightapi.airport.entity.Airport;
 import com.example.flightapi.airport.repository.AirportRepository;
 import com.example.flightapi.airport.service.AirportService;
+import com.example.flightapi.common.exception.EntityNotFoundException;
 import com.example.flightapi.common.utils.CacheKey;
 import com.example.flightapi.common.utils.RedisUtils;
 import com.example.flightapi.security.config.DictionaryProperties;
@@ -75,5 +76,14 @@ public class AirportServiceImpl implements AirportService {
         Airport updatedAirport = airportRepository.save(airport);
         clearAirportCache();
         return updatedAirport;
+    }
+
+    @Override
+    public Airport getAirportByAirportId(int airportId) {
+        Airport airport = airportRepository.findByAirportId(airportId);
+        if (airport == null) {
+            throw new EntityNotFoundException(Airport.class, "airportId", String.valueOf(airportId));
+        }
+        return airport;
     }
 }

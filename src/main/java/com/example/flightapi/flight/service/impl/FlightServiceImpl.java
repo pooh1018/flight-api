@@ -8,6 +8,7 @@ import com.example.flightapi.flight.repository.FlightRepository;
 import com.example.flightapi.cabin.repository.CabinClassRepository;
 import com.example.flightapi.flight.service.FlightService;
 import lombok.RequiredArgsConstructor;
+import org.bson.types.ObjectId;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -79,12 +80,12 @@ public class FlightServiceImpl implements FlightService {
     }
 
     @Override
-    public Optional<CabinClass> getCabinClassByFlightIdAndType(String flightId, String classType) {
+    public Optional<CabinClass> getCabinClassByFlightIdAndType(String flightId, int classType) {
         return cabinClassRepository.findByFlightIdAndClassType(flightId, classType);
     }
 
     @Override
-    public CabinClass updateCabinClassAvailability(String flightId, String classType, int seatCount) {
+    public CabinClass updateCabinClassAvailability(String flightId, int classType, int seatCount) {
         CabinClass cabinClass = cabinClassRepository.findByFlightIdAndClassType(flightId, classType)
                 .orElseThrow(() -> new RuntimeException("Cabin class not found"));
         cabinClass.setAvailableSeats(cabinClass.getAvailableSeats() + seatCount);

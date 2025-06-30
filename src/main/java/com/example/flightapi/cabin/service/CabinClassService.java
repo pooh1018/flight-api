@@ -1,6 +1,7 @@
 package com.example.flightapi.cabin.service;
 
 import com.example.flightapi.cabin.entity.CabinClass;
+import org.bson.types.ObjectId;
 
 import java.util.List;
 import java.util.Optional;

@@ -3,10 +3,13 @@ package com.example.flightapi.cabin.entity;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
+import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.CompoundIndexes;
+import org.springframework.data.mongodb.core.mapping.FieldType;
+
 import java.math.BigDecimal;
 
 @Data
@@ -21,8 +24,8 @@ public class CabinClass {
     @Schema(description = "Unique identifier of the cabin class", example = "cc123")
     private String id;
 
-    @Field("flight_id")
-    @Schema(description = "ID of the flight this cabin class belongs to", example = "fl123")
+    @Field(value = "flight_id", targetType = FieldType.OBJECT_ID)
+    @Schema(description = "ID of the flight this cabin class belongs to", example = "507f1f77bcf86cd799439011")
     private String flightId;
 
     @Field("class_type")

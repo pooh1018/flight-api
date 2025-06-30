@@ -2,6 +2,7 @@ package com.example.flightapi.cabin.util;
 
 import com.example.flightapi.cabin.dto.CabinClassDTO;
 import com.example.flightapi.cabin.entity.CabinClass;
+import org.bson.types.ObjectId;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -23,7 +24,7 @@ public class CabinClassMapper {
 
         CabinClassDTO dto = new CabinClassDTO();
         dto.setId(cabinClass.getId());
-        dto.setFlightId(cabinClass.getFlightId());
+        dto.setFlightId(cabinClass.getFlightId().toString());
         dto.setClassType(cabinClass.getClassType());
         dto.setName(cabinClass.getName());
         dto.setAvailableSeats(cabinClass.getAvailableSeats());

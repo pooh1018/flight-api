@@ -4,6 +4,7 @@ import com.example.flightapi.cabin.entity.CabinClass;
 import com.example.flightapi.cabin.repository.CabinClassRepository;
 import com.example.flightapi.cabin.service.CabinClassService;
 import com.example.flightapi.common.exception.EntityNotFoundException;
+import org.bson.types.ObjectId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

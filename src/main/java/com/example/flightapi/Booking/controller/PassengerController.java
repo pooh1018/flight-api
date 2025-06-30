@@ -3,6 +3,8 @@ package com.example.flightapi.Booking.controller;
 import com.example.flightapi.Booking.entity.Passenger;
 import com.example.flightapi.Booking.service.PassengerService;
 import com.example.flightapi.common.exception.handler.ApiResult;
+import com.example.flightapi.common.utils.SecurityUtils;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,7 +36,8 @@ public class PassengerController {
             @Parameter(description = "Passenger details including name, contact info, passport details and other required information",
                       required = true)
             @RequestBody Passenger passenger) {
-        return ApiResult.success(passengerService.createPassenger(passenger));
+        passengerService.createPassenger(passenger);
+        return ApiResult.success();
     }
 
     @Operation(summary = "Get passenger by ID",
@@ -50,7 +53,7 @@ public class PassengerController {
             @Parameter(description = "ID of the passenger to retrieve",
                       required = true,
                       example = "PAX-12345")
-            @PathVariable String id) {
+            @PathVariable ObjectId id) {
         return ApiResult.success(passengerService.getPassengerById(id));
     }
 
@@ -59,11 +62,10 @@ public class PassengerController {
         @ApiResponse(responseCode = "200", description = "Successfully retrieved passengers"),
         @ApiResponse(responseCode = "404", description = "Booking not found")
     })
-    @GetMapping("/booking/{bookingId}")
-    public ApiResult getPassengersByBookingId(
-            @Parameter(description = "ID of the booking to retrieve passengers for", required = true)
-            @PathVariable String bookingId) {
-        return ApiResult.success(passengerService.getPassengersByBookingId(bookingId));
+    @GetMapping("/listByUserId")
+    public ApiResult getPassengersByUserId() {
+        Integer currentUserId = SecurityUtils.getCurrentUserId();
+        return ApiResult.success(passengerService.getPassengersByUserId(currentUserId));
     }
 
     @Operation(summary = "Get all passengers", description = "Retrieves a list of all passengers")
@@ -83,24 +85,20 @@ public class PassengerController {
         @ApiResponse(responseCode = "404", description = "Passenger not found"),
         @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    @PutMapping("/{id}")
+    @PutMapping
     public ApiResult updatePassenger(
-            @Parameter(description = "Unique identifier of the passenger to update",
-                      required = true,
-                      example = "PAX-12345")
-            @PathVariable String id,
             @Parameter(description = "Updated passenger object containing all modified fields",
                       required = true)
             @RequestBody Passenger passenger) {
-        passenger.setId(id);
-        return ApiResult.success(passengerService.updatePassenger(passenger));
+        passengerService.updatePassenger(passenger);
+        return ApiResult.success();
     }
 
     @Operation(summary = "Delete a passenger by ID", description = "Deletes a passenger record by their ID")
     @DeleteMapping("/{id}")
     public ApiResult deletePassenger(
             @Parameter(description = "ID of the passenger to delete", required = true)
-            @PathVariable String id) {
+            @PathVariable ObjectId id) {
         passengerService.deletePassenger(id);
         return ApiResult.success();
     }

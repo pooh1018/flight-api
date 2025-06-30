@@ -209,7 +209,7 @@ public class FlightController {
             @Parameter(description = "ID of the flight", required = true)
             @PathVariable String flightId,
             @Parameter(description = "Type of cabin class", required = true)
-            @PathVariable String classType,
+            @PathVariable int classType,
             @Parameter(description = "New available seat count", required = true)
             @RequestParam int seatCount) {
         return ApiResult.success(flightService.updateCabinClassAvailability(

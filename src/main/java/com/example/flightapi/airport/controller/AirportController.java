@@ -114,4 +114,18 @@ public class AirportController {
         airportService.deleteAirport(id);
         return ApiResult.success();
     }
+
+    @Operation(summary = "Get Airport by Airport ID", description = "Returns detailed information of a specific airport by numeric airport ID")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Successfully retrieved airport information",
+                    content = @Content(schema = @Schema(implementation = Airport.class))),
+        @ApiResponse(responseCode = "404", description = "Airport not found"),
+        @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    @GetMapping("/airId/{airportId}")
+    public ApiResult getAirportByAirportId(
+            @Parameter(description = "Numeric Airport ID", required = true, example = "1001")
+            @PathVariable int airportId) {
+        return ApiResult.success(airportService.getAirportByAirportId(airportId));
+    }
 }

@@ -1,6 +1,7 @@
 package com.example.flightapi.cabin.repository;
 
 import com.example.flightapi.cabin.entity.CabinClass;
+import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -11,7 +12,6 @@ import java.util.Optional;
 @Repository
 public interface CabinClassRepository extends MongoRepository<CabinClass, String> {
     List<CabinClass> findByFlightId(String flightId);
-    Optional<CabinClass> findByFlightIdAndClassType(String flightId, String classType);
     void deleteByFlightId(String flightId);
 
     /**

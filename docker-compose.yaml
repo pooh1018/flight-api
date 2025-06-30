@@ -6,17 +6,17 @@ services:
     image: flight-api:latest
     container_name: flight-api
     ports:
-      - "8002:8002"
+      - "8001:8001"
 #    depends_on:
 #      - mongodb
 #      - redis
     environment:
-      - SERVER_PORT=8002
+      - SERVER_PORT=8001
 #      - SERVER_ADDRESS=0.0.0.0
       - LOG_ACTIVE=dev
       - MONGO_DATABASE_URL=mongodb://admin_user:flight20241qazxsw21t@47.109.24.42:27017/flightsystem
-#      - REDIS_HOST=8.137.95.47
-      - REDIS_HOST=127.0.0.1
+      - REDIS_HOST=8.137.95.47
+#      - REDIS_HOST=127.0.0.1
       - REDIS_PASSWORD=123456
       - CORS_ALLOWED_ORIGIN_PATTERNS=http://192.168.31.240:8011,http://172.30.144.1:8011,http://localhost:8011
 #      - CORS_ALLOWED_ORIGIN_PATTERNS=http://47.109.24.42:*,http://localhost:*,*://*:80,*://*:8011

@@ -1,5 +1,6 @@
 package com.example.flightapi.Booking.service;
 
+import com.example.flightapi.Booking.dto.BookingDTO;
 import com.example.flightapi.Booking.entity.Booking;
 
 import java.time.LocalDateTime;
@@ -14,6 +15,8 @@ public interface BookingService {
     Optional<Booking> getBookingByReference(String reference);
     List<Booking> getBookingsByFlightId(String flightId);
     List<Booking> getBookingsByUserId(int userId);
+    List<Booking> getBookingsByUserIdAndFlightId(int userId, String flightId);
+    List<Booking> getBookingsByUserIdAndDateRange(int userId, LocalDateTime start, LocalDateTime end);
     List<Booking> getBookingsByStatus(String status);
     List<Booking> getBookingsByEmail(String email);
     List<Booking> getBookingsByDateRange(LocalDateTime start, LocalDateTime end);

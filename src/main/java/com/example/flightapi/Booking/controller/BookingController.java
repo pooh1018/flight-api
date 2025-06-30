@@ -1,5 +1,6 @@
 package com.example.flightapi.Booking.controller;
 
+import com.example.flightapi.Booking.dto.BookingDTO;
 import com.example.flightapi.Booking.entity.Booking;
 import com.example.flightapi.Booking.service.BookingService;
 import com.example.flightapi.common.exception.handler.ApiResult;
@@ -8,7 +9,9 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
+import com.example.flightapi.common.utils.SecurityUtils;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -29,8 +32,7 @@ public class BookingController {
             @RequestBody Booking resources)  {
         Booking booking = new Booking();
         BeanUtils.copyProperties(resources, booking);
-        bookingService.createBooking(booking);
-        return ApiResult.success();
+        return ApiResult.success(bookingService.createBooking(booking));
     }
 
     @Operation(summary = "Get booking by ID", description = "Retrieves a specific booking by its ID")
@@ -39,18 +41,7 @@ public class BookingController {
             @Parameter(description = "ID of the booking to retrieve", required = true)
             @PathVariable String id) {
         Optional<Booking> booking = bookingService.getBookingById(id);
-        return ApiResult.success(booking.map(ApiResult::success).orElseGet(() -> ApiResult.success(null)));
-    }
-
-    @Operation(summary = "Get booking by ID and email", description = "Retrieves a booking based on both ID and email")
-    @GetMapping("/{id}/email/{email}")
-    public ApiResult getBookingByIdAndEmail(
-            @Parameter(description = "ID of the booking to retrieve", required = true)
-            @PathVariable String id,
-            @Parameter(description = "Contact email associated with the booking", required = true)
-            @PathVariable String email) {
-        Optional<Booking> booking = bookingService.getBookingByIdAndEmail(id, email);
-        return ApiResult.success(booking.map(ApiResult::success).orElseGet(() -> ApiResult.success(null)));
+        return booking.map(ApiResult::success).orElseGet(() -> ApiResult.success(null));
     }
 
     @Operation(summary = "Get bookings by flight ID", description = "Retrieves all bookings for a specific flight")
@@ -91,6 +82,39 @@ public class BookingController {
     @GetMapping
     public ApiResult getAllBookings() {
         return ApiResult.success(bookingService.getAllBookings());
+    }
+
+    @Operation(summary = "Get bookings by user ID", description = "Retrieves all bookings for a specific user")
+    @GetMapping("/user/{userId}")
+    public ApiResult getBookingsByUserId(
+            @Parameter(description = "ID of the user to retrieve bookings for", required = true)
+            @PathVariable Integer userId) {
+        return ApiResult.success(bookingService.getBookingsByUserId(userId));
+    }
+
+    @Operation(summary = "Get bookings by user ID and flight ID",
+               description = "Retrieves bookings for a specific user and flight combination")
+    @GetMapping("/user/{userId}/flight/{flightId}")
+    public ApiResult getBookingsByUserIdAndFlightId(
+            @Parameter(description = "ID of the user", required = true)
+            @PathVariable Integer userId,
+            @Parameter(description = "ID of the flight", required = true)
+            @PathVariable String flightId) {
+        return ApiResult.success(bookingService.getBookingsByUserIdAndFlightId(userId, flightId));
+    }
+
+    @Operation(summary = "Get current user's bookings within a date-time range",
+               description = "Retrieves bookings for the authenticated user between specified start and end times")
+    @GetMapping("/my/date-range")
+    public ApiResult getBookingsByUserIdAndDateRange(
+            @Parameter(description = "Start date and time for search range (ISO format)",
+                    required = false, example = "2023-12-25T00:00:00")
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime start,
+            @Parameter(description = "End date and time for search range (ISO format)",
+                    required = false, example = "2023-12-26T23:59:59")
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime end) {
+        Integer currentUserId = SecurityUtils.getCurrentUserId();
+        return ApiResult.success(bookingService.getBookingsByUserIdAndDateRange(currentUserId, start, end));
     }
 
     @Operation(summary = "Cancel a booking by ID", description = "Marks a booking as cancelled without deleting it")

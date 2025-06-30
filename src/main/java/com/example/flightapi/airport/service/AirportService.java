@@ -10,4 +10,5 @@ public interface AirportService {
     List<Airport> getAllAirports();
     void deleteAirport(String id);
     Airport updateAirport(Airport airport);
+    Airport getAirportByAirportId(int airportId);
 }

@@ -7,6 +7,8 @@ import com.example.flightapi.flight.dto.FlightPageDTO;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+
+import org.bson.types.ObjectId;
 import org.springframework.data.domain.Pageable;
 
 public interface FlightService {
@@ -67,7 +69,7 @@ public interface FlightService {
      * @param classType 舱位类型
      * @return 舱位信息
      */
-    Optional<CabinClass> getCabinClassByFlightIdAndType(String flightId, String classType);
+    Optional<CabinClass> getCabinClassByFlightIdAndType(String flightId, int classType);
 
     /**
      * 更新舱位可用性（增加或减少可用座位数）
@@ -76,7 +78,7 @@ public interface FlightService {
      * @param seatCount 座位数量（正数表示增加，负数表示减少）
      * @return 更新后的舱位信息
      */
-    CabinClass updateCabinClassAvailability(String flightId, String classType, int seatCount);
+    CabinClass updateCabinClassAvailability(String flightId, int classType, int seatCount);
 
     /**
      * 获取航班的所有舱位信息
