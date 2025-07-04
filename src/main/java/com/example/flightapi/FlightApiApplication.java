@@ -45,8 +45,8 @@ public class FlightApiApplication {
         // 获取服务器IP地址
         String serverAddress = getServerAddress();
 
-        log.info("API URL: {}", "http://" + serverAddress + ":" + port);
-        log.info("Swagger: {}", "http://" + serverAddress + ":" + port + "/swagger-ui.html");
+        log.info("API URL: {}", "http://" + serverAddress + ":" + port+ "/api");
+        log.info("Swagger: {}", "http://" + serverAddress + ":" + port + "/api/swagger-ui.html");
         log.info("---------------------------------------------");
     }
 

@@ -18,7 +18,7 @@ services:
       - REDIS_HOST=8.137.95.47
 #      - REDIS_HOST=127.0.0.1
       - REDIS_PASSWORD=123456
-      - CORS_ALLOWED_ORIGIN_PATTERNS=http://192.168.31.240:8011,http://172.30.144.1:8011,http://localhost:8011
+      - CORS_ALLOWED_ORIGIN_PATTERNS=http://localhost:8011/api,http://localhost:8011
 #      - CORS_ALLOWED_ORIGIN_PATTERNS=http://47.109.24.42:*,http://localhost:*,*://*:80,*://*:8011
       - CORS_ALLOWED_CREDENTIALS=true
     volumes:
