@@ -81,8 +81,7 @@ public interface FlightRepository extends MongoRepository<Flight, String> {
         "{ $match: { $and: [ " +
             "{ 'departure_airport_id': ?0 }, " +
             "{ 'destination_airport_id': ?1 }, " +
-            "{ 'departure_time': { $gte: ?2 } }, " +
-            "{ 'arrival_time': { $lte: ?3 } } " +
+            "{ 'departure_time': { $gte: ?2, $lte: ?3 } } " +
         "] } }",
         "{ $lookup: { " +
             "from: 'cabin_class', " +
@@ -90,14 +89,16 @@ public interface FlightRepository extends MongoRepository<Flight, String> {
             "foreignField: 'flight_id', " +
             "as: 'cabin_classes' " +
         "} }",
-        "{ $skip: ?4 }",
-        "{ $limit: ?5 }"
+        "{ $sort: ?4 }",
+        "{ $skip: ?5 }",
+        "{ $limit: ?6 }"
     })
     List<Flight> findFlightsWithCabinClassesPaged(
             int departureAirportId,
             int destinationAirportId,
         LocalDateTime startDate,
         LocalDateTime endDate,
+        org.bson.Document sort,
         int skip,
         int limit
     );
@@ -107,8 +108,7 @@ public interface FlightRepository extends MongoRepository<Flight, String> {
         "{ $match: { $and: [ " +
             "{ 'departure_airport_id': ?0 }, " +
             "{ 'destination_airport_id': ?1 }, " +
-            "{ 'departure_time': { $gte: ?2 } }, " +
-            "{ 'arrival_time': { $lte: ?3 } } " +
+            "{ 'departure_time': { $gte: ?2, $lte: ?3 } } " +
         "] } }",
         "{ $count: 'total' }"
     })

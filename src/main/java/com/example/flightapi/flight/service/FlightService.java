@@ -3,12 +3,12 @@ package com.example.flightapi.flight.service;
 import com.example.flightapi.flight.entity.Flight;
 import com.example.flightapi.cabin.entity.CabinClass;
 
-import com.example.flightapi.flight.dto.FlightPageDTO;
+import com.example.flightapi.common.utils.PageResult;
+import com.example.flightapi.flight.dto.FlightWithCabinsDTO;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-import org.bson.types.ObjectId;
 import org.springframework.data.domain.Pageable;
 
 public interface FlightService {
@@ -87,7 +87,7 @@ public interface FlightService {
      */
     List<CabinClass> getCabinClassesByFlightId(String flightId);
 
-    FlightPageDTO getAllFlightsWithCabins(Pageable pageable);
+    PageResult<FlightWithCabinsDTO> getAllFlightsWithCabins(Pageable pageable);
 
     /**
      * 分页查询：根据出发机场ID、到达机场ID和时间范围查询航班
@@ -98,7 +98,7 @@ public interface FlightService {
      * @param pageable 分页参数
      * @return 分页航班数据
      */
-    FlightPageDTO findFlightsWithCabinClassesByPage(int departureAirportId, int destinationAirportId,
+    PageResult<FlightWithCabinsDTO> findFlightsWithCabinClassesByPage(int departureAirportId, int destinationAirportId,
                                                   LocalDateTime startDate, LocalDateTime endDate,
                                                   Pageable pageable);
 }

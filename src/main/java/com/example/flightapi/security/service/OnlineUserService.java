@@ -65,10 +65,10 @@ public class OnlineUserService {
      */
     public PageResult<OnlineUserDto> getAll(String username, Pageable pageable){
         List<OnlineUserDto> onlineUserDtos = getAll(username);
-        return PageUtil.toPage(
-                PageUtil.paging(pageable.getPageNumber(), pageable.getPageSize(), onlineUserDtos),
-                onlineUserDtos.size()
-        );
+        List<OnlineUserDto> pagedList = PageUtil.paging(pageable.getPageNumber(), pageable.getPageSize(), onlineUserDtos);
+        int totalElements = onlineUserDtos.size();
+        int totalPages = (int) Math.ceil((double) totalElements / pageable.getPageSize());
+        return PageUtil.toPage(pagedList, pageable.getPageNumber(), totalPages, totalElements);
     }
 
     /**

@@ -16,6 +16,10 @@ import com.example.flightapi.common.utils.SecurityUtils;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import com.example.flightapi.common.utils.PageResult;
 
 @Tag(name = "Booking Management", description = "Operations pertaining to flight bookings")
 @RestController
@@ -115,6 +119,29 @@ public class BookingController {
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime end) {
         Integer currentUserId = SecurityUtils.getCurrentUserId();
         return ApiResult.success(bookingService.getBookingsByUserIdAndDateRange(currentUserId, start, end));
+    }
+
+    @Operation(summary = "Get current user's bookings within a date-time range with pagination",
+               description = "Retrieves paginated bookings for the authenticated user between specified start and end times")
+    @GetMapping("/my/date-range/paged")
+    public ApiResult getBookingsByUserIdAndDateRangePaged(
+            @Parameter(description = "Start date and time for search range (ISO format)",
+                    required = false, example = "2023-12-25T00:00:00")
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime start,
+            @Parameter(description = "End date and time for search range (ISO format)",
+                    required = false, example = "2023-12-26T23:59:59")
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime end,
+            @Parameter(description = "Pagination and sorting parameters (page, size, sort). For multiple sort fields use: sort=field1,direction&sort=field2,direction",
+                    example = "page=0&size=10&sort=bookingTime,desc&sort=id,asc")
+            Pageable pageable) {
+
+        Integer currentUserId = SecurityUtils.getCurrentUserId();
+
+        // 调用服务方法获取分页结果
+        PageResult<Booking> pageResult = bookingService.getBookingsByUserIdAndDateRangePaged(
+            currentUserId, start, end, pageable);
+
+        return ApiResult.success(pageResult);
     }
 
     @Operation(summary = "Cancel a booking by ID", description = "Marks a booking as cancelled without deleting it")

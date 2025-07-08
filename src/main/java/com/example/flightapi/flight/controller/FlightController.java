@@ -2,6 +2,8 @@ package com.example.flightapi.flight.controller;
 
 import com.example.flightapi.cabin.entity.CabinClass;
 import com.example.flightapi.common.exception.handler.ApiResult;
+import com.example.flightapi.common.utils.PageResult;
+import com.example.flightapi.flight.dto.FlightWithCabinsDTO;
 import com.example.flightapi.flight.dto.SearchFlightRequestDTO;
 import com.example.flightapi.flight.entity.Flight;
 import com.example.flightapi.flight.service.FlightService;
@@ -16,7 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
-import com.example.flightapi.flight.dto.FlightPageDTO;
+
 import java.time.LocalDateTime;
 import java.util.List;
 import org.springframework.data.domain.Pageable;
@@ -109,12 +111,12 @@ public class FlightController {
                description = "Retrieves all flights with their associated cabin classes in paginated format")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Paginated list of flights with cabin classes",
-                     content = @Content(schema = @Schema(implementation = FlightPageDTO.class)))
+                     content = @Content(schema = @Schema(implementation = PageResult.class)))
     })
     public ApiResult getAllFlightsWithCabins(
             @Parameter(description = "Pagination parameters (page, size, sort)")
             Pageable pageable) {
-        FlightPageDTO flightPage = flightService.getAllFlightsWithCabins(pageable);
+        PageResult<FlightWithCabinsDTO> flightPage = flightService.getAllFlightsWithCabins(pageable);
         return ApiResult.success(flightPage);
     }
 
@@ -126,7 +128,7 @@ public class FlightController {
                description = "Searches flights with cabin classes by route and optional date range in paginated format. Search criteria should be provided in request body.")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Paginated list of matching flights with cabin classes",
-                     content = @Content(schema = @Schema(implementation = FlightPageDTO.class)))
+                     content = @Content(schema = @Schema(implementation = PageResult.class)))
     })
     public ApiResult searchFlightsWithCabinClassesByPage(
             @Parameter(description = "Search criteria")
@@ -136,8 +138,8 @@ public class FlightController {
         return ApiResult.success(flightService.findFlightsWithCabinClassesByPage(
                 searchRequest.getDepartureAirportId(),
                 searchRequest.getDestinationAirportId(),
-                searchRequest.getStartDate(),
-                searchRequest.getEndDate(),
+                searchRequest.getStartDateAsLocalDateTime(),
+                searchRequest.getEndDateAsLocalDateTime(),
                 pageable));
     }
 

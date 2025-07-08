@@ -6,6 +6,7 @@ import com.example.flightapi.Booking.entity.Booking;
 import com.example.flightapi.Booking.repository.BookingRepository;
 import com.example.flightapi.cabin.service.CabinClassService;
 import com.example.flightapi.common.exception.EntityNotFoundException;
+import com.example.flightapi.common.exception.SystemException;
 import com.example.flightapi.common.utils.SecurityUtils;
 import com.example.flightapi.flight.entity.Flight;
 import com.example.flightapi.flight.service.FlightService;
@@ -13,6 +14,7 @@ import com.example.flightapi.Booking.service.PassengerService;
 import org.bson.types.ObjectId;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -20,6 +22,10 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import com.example.flightapi.common.utils.PageResult;
+import com.example.flightapi.common.utils.PageUtil;
 
 @Service
 public class BookingServiceImpl implements BookingService {
@@ -77,7 +83,7 @@ public class BookingServiceImpl implements BookingService {
             .getAvailableSeats();
 
         if (availableSeats <= 0) {
-            throw new RuntimeException("No available seats for the selected cabin class");
+            throw new SystemException(String.valueOf(HttpStatus.CONFLICT.value()), "No available seats for the selected cabin class");
         }
 
         Integer currentUserId = SecurityUtils.getCurrentUserId();
@@ -165,6 +171,19 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
+    public PageResult<Booking> getBookingsByUserIdAndDateRangePaged(int userId, LocalDateTime start, LocalDateTime end, Pageable pageable) {
+        // 如果没有提供日期范围，设置默认值
+        LocalDateTime effectiveEndDate = end != null ? end : LocalDateTime.now();
+        LocalDateTime effectiveStartDate = start != null ? start : effectiveEndDate.minusMonths(6);
+
+        // 使用分页查询
+        Page<Booking> page = bookingRepository.findByUserIdAndBookingTimeBetween(userId, effectiveStartDate, effectiveEndDate, pageable);
+
+        // 将Spring Data的Page转换为自定义的PageResult
+        return PageUtil.toPage(page);
+    }
+
+    @Override
     public List<Booking> getAllBookings() {
         return bookingRepository.findAll();
     }
@@ -205,7 +224,9 @@ public class BookingServiceImpl implements BookingService {
             // 计算需要的座位数
             int requiredSeats = Booking.getPassengers().size();
             if (availableSeats < requiredSeats) {
-                throw new RuntimeException("Not enough available seats in the new flight");
+//                throw new RuntimeException("Not enough available seats in the new flight");
+                throw new SystemException(String.valueOf(HttpStatus.CONFLICT.value()), "Not enough available seats in the new flight");
+
             }
 
             // 恢复原航班的座位

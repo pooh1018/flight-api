@@ -62,7 +62,7 @@ public class GlobalExceptionHandler {
 	public ApiResult SystemException(SystemException e) {
         // 打印堆栈信息
         log.error(ThrowableUtil.getStackTrace(e));
-        return ApiResult.fail(e.getCode(),e.getMessage());
+        return ApiResult.fail(e.getCode(), e.getMessage());
 	}
 
     /**

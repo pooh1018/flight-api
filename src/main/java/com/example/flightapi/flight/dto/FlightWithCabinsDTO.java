@@ -9,5 +9,5 @@ import java.util.List;
 @Data
 public class FlightWithCabinsDTO {
     private Flight flight;
-    private List<CabinClass> cabins;
+//    private List<CabinClass> cabins;
 }

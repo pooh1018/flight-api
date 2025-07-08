@@ -6,6 +6,7 @@ import com.example.flightapi.common.annotation.Limit;
 import com.example.flightapi.common.exception.SystemException;
 import com.example.flightapi.common.utils.RequestHolder;
 import com.example.flightapi.common.utils.StringUtils;
+import org.apache.coyote.BadRequestException;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -64,7 +65,7 @@ public class LimitAspect {
             logger.info("第{}次访问key为 {}，描述为 [{}] 的接口", count, keys, limit.name());
             return joinPoint.proceed();
         } else {
-            throw new SystemException("访问次数受限制");
+            throw new BadRequestException("访问次数受限制");
         }
     }
 

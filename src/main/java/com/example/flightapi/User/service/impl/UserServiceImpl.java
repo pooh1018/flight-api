@@ -42,10 +42,7 @@ public class UserServiceImpl implements UserService {
         Sort sort = Sort.by(Sort.Direction.fromString(user.getSortDirection()), user.getSortField());
         Pageable pageable = PageRequest.of(user.getPageNo() - 1, user.getPageSize(), sort);
         Page<User> pageResult = userRepository.findAll(pageable);
-        return new PageResult<>(
-                pageResult.getContent(),
-                pageResult.getTotalElements()
-        );
+        return PageUtil.toPage(pageResult);
     }
 
     @Override

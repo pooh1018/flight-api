@@ -2,6 +2,8 @@ package com.example.flightapi.Booking.service;
 
 import com.example.flightapi.Booking.dto.BookingDTO;
 import com.example.flightapi.Booking.entity.Booking;
+import com.example.flightapi.common.utils.PageResult;
+import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDateTime;
 import java.util.Date;
@@ -17,6 +19,8 @@ public interface BookingService {
     List<Booking> getBookingsByUserId(int userId);
     List<Booking> getBookingsByUserIdAndFlightId(int userId, String flightId);
     List<Booking> getBookingsByUserIdAndDateRange(int userId, LocalDateTime start, LocalDateTime end);
+
+    PageResult<Booking> getBookingsByUserIdAndDateRangePaged(int userId, LocalDateTime start, LocalDateTime end, Pageable pageable);
     List<Booking> getBookingsByStatus(String status);
     List<Booking> getBookingsByEmail(String email);
     List<Booking> getBookingsByDateRange(LocalDateTime start, LocalDateTime end);

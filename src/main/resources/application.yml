@@ -146,7 +146,7 @@ cors:
   # 3. 特定IP的多个端口: http://192.168.1.100:8011, http://192.168.1.100:8012
   # 4. *://*:8021
   # 5. 本地开发环境: http://localhost:*
-  allowed-origin-patterns: ${CORS_ALLOWED_ORIGIN_PATTERNS:http://8.137.95.47:*/api,http://47.109.24.42:*/api,http://localhost:8011,http://localhost:8001/api,http://localhost:80/api,http://localhost/api}
+  allowed-origin-patterns: ${CORS_ALLOWED_ORIGIN_PATTERNS:http://8.137.95.47:*/api,http://47.109.24.42:*/api,http://localhost:8011,http://localhost:80/api,http://localhost:8011/api,http://localhost/api}
   allowed-methods: GET,POST,PUT,DELETE,OPTIONS,PATCH
   allowed-headers: "*"  #Authorization,Content-Type,X-Requested-With,Accept,Origin,Access-Control-Request-Method,Access-Control-Request-Headers
   max-age: 300
