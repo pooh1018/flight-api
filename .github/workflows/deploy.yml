@@ -1,0 +1,68 @@
+name: Deploy to Alibaba Cloud
+
+on:
+  push:
+    branches:
+      - dev-v0.0.1
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 检出代码
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # 设置Docker Buildx
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      # 构建镜像
+      - name: Build image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: false
+          tags: flight-api:${{ github.sha }}
+
+      # 导出镜像到tar文件
+      - name: Export image
+        run: docker save -o image.tar flight-api:${{ github.sha }}
+
+      # 上传镜像到服务器
+      - name: Upload image to server
+        uses: appleboy/scp-action@v0.1.6
+        with:
+          host: ${{ secrets.ALIYUN_HOST }}
+          username: ${{ secrets.ALIYUN_USERNAME }}
+          key: ${{ secrets.ALIYUN_PRIVATE_KEY }}
+          source: "image.tar"
+          target: "/app/flight-api"
+
+      # 通过SSH部署到阿里云
+      - name: Deploy with Docker Compose
+        uses: appleboy/ssh-action@v0.1.16
+        with:
+          host: ${{ secrets.ALIYUN_HOST }}
+          username: ${{ secrets.ALIYUN_USERNAME }}
+          key: ${{ secrets.ALIYUN_PRIVATE_KEY }}
+          script: |
+            cd /app/flight-api
+            
+            # 加载镜像
+            docker load -i image.tar
+            
+            # 更新代码
+            git pull origin main
+            
+            # 更新环境变量
+            #echo "APP_ENV=production" > .env
+            
+            # 启动容器
+            cd ~/docker
+            docker-compose up flight-api -d --build
+            
+            # 清理旧文件
+            cd /app/flight-api
+            rm image.tar
