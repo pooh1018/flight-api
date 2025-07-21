@@ -17,7 +17,6 @@ logs
 .sts4-cache
 
 ### IntelliJ IDEA ###
-.github
 .idea
 *.iws
 *.iml
