@@ -8,7 +8,7 @@ WORKDIR /app
 COPY /src/main/resources/application.yml /config/application.yml
 
 # 复制应用程序jar包
-COPY ./target/*.jar /app.jar
+COPY target/*.jar /app.jar
 
 # 设置环境变量
 ENV JAVA_OPTS="-Xms512m -Xmx512m -Djava.security.egd=file:/dev/./urandom"
