@@ -42,7 +42,7 @@ jobs:
 
       # 通过SSH部署到阿里云
       - name: Deploy with Docker Compose
-        uses: appleboy/ssh-action@v0.1.16
+        uses: appleboy/ssh-action@v1.0.0
         with:
           host: ${{ secrets.ALIYUN_HOST }}
           username: ${{ secrets.ALIYUN_USERNAME }}
