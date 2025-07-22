@@ -29,8 +29,8 @@ cd ~/app/flight-api || { log "错误: 项目目录不存在"; exit 1; }
 
 # 拉取最新代码
 log "---- 拉取最新代码 ----"
-git fetch origin dev-v0.0.1
-git reset --hard origin/dev-v0.0.1  # 危险：会丢失所有本地修改
+git fetch origin dev-v0.0.1  # 获取远程更新
+git reset --hard origin/dev-v0.0.1  # 强制重置到远程状态
 
 # 编译项目
 log "---- 编译项目 ----"
