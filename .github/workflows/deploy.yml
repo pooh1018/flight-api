@@ -22,8 +22,8 @@ jobs:
           distribution: 'temurin'
 
       # 编译项目
-      - name: Build with Maven
-        run: mvn clean package -DskipTests
+      #- name: Build with Maven
+      #  run: mvn clean package -DskipTests
 
       # 设置Docker Buildx
       - name: Set up Docker Buildx
