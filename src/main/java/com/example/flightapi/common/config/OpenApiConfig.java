@@ -28,7 +28,7 @@ public class OpenApiConfig {
                                 .name("Apache 2.0")
                                 .url("http://www.apache.org/licenses/LICENSE-2.0.html")))
                 .servers(List.of(
-                        new Server().url("http://47.109.24.42:8001/api").description("默认服务器")
+                        new Server().url("http://82.156.157.214:8001/api").description("默认服务器")
                 ));
     }
 }
