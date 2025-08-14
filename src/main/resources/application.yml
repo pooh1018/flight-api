@@ -1,0 +1,158 @@
+server:
+  port: ${SERVER_PORT:8001}
+  address: ${SERVER_ADDRESS:0.0.0.0}
+  servlet:
+    context-path: /api
+  tomcat:
+    threads:
+      max: 200
+    max-connections: 8192
+    accept-count: 100
+    connection-timeout: 5000
+
+#配置数据源
+spring:
+  application:
+    name: flight-api
+  data:
+    mongodb:
+#      uri: ${MONGO_DATABASE_URL:mongodb://admin_user:123456@localhost:27017/flightsystem}
+      uri: ${MONGO_DATABASE_URL:mongodb://admin_user:flight20241qazxsw21t@47.109.24.42:27017/flightsystem}
+#      host: 54.206.76.143  #共有IP
+#      host: 172.31.24.68  #私有IP
+#      port: 27017
+#      database: flightsystem
+#      username: ${MONGO_INITDB_ROOT_USERNAME}
+#      password: ${MONGO_INITDB_ROOT_PASSWORD}
+
+    redis:
+      #数据库索引
+      database: 2
+      host: ${REDIS_HOST:8.137.95.47}
+#      host: 3.24.214.163  #共有IP
+#      host: 172.31.32.203  #私有IP
+      port: 6379
+      password: ${REDIS_PASSWORD:123456}
+      #连接超时时间
+      timeout: 5000
+      # 连接池配置
+      lettuce:
+        pool:
+          # 连接池最大连接数
+          max-active: 2000
+          # 连接池最大阻塞等待时间（毫秒），负值表示没有限制
+          max-wait: 10000
+          # 连接池中的最大空闲连接数
+          max-idle: 200
+          # 连接池中的最小空闲连接数
+          min-idle: 8
+
+  messages:
+    basename: messages
+    charset: UTF-8
+  jackson:
+    default-property-inclusion: non_null
+    time-zone: GMT+8
+    # 中文： zh_CN   英文：en
+    locale: en
+
+  mvc:
+    pathmatch:
+      matching-strategy: ANT_PATH_MATCHER
+
+  pid:
+    file: ./FlightApiApplication.pid
+
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:dev}
+#
+#logging:
+#  level:
+#    root: INFO
+#    org.springframework.security: INFO
+#    com.example.flightapi.*.controller: INFO
+#    com.example.flightapi.*.service.impl: INFO
+#    com.example.flightapi.*.repository: INFO
+#    com.example.flightapi.*.service: INFO
+
+# 登录相关配置
+login:
+  #  是否限制单用户登录
+  single-login: true
+  # Redis用户登录缓存配置
+  user-cache:
+    # 存活时间/秒
+    idle-time: 21600
+  authorities: admin
+
+jwt:
+  header: Authorization
+  # 令牌前缀
+  token-start-with: Flight
+  # 必须使用最少88位的Base64对该令牌进行编码
+  base64-secret: ZmQ0ZGI5NjQ0MDQwY2I4MjMxY2Y3ZmI3MjdhN2ZmMjNhODViOTg1ZGE0NTBjMGM4NDA5NzYxMjdjOWMwYWRmZTBlZjlhNGY3ZTg4Y2U3YTE1ODVkZDU5Y2Y3OGYwZWE1NzUzNWQ2YjFjZDc0NGMxZWU2MmQ3MjY1NzJmNTE0MzI=
+  # 令牌过期时间 此处单位/毫秒 ，默认4小时，可在此网站生成 https://www.convertworld.com/zh-hans/time/milliseconds.html
+  token-validity-in-seconds: 14400000
+  # 在线用户key
+  online-key: "online_token:"
+  # token 续期检查时间范围（默认30分钟，单位毫秒），在token即将过期的一段时间内用户操作了，则给用户的token续期
+  detect: 1800000
+  # 续期时间范围，默认1小时，单位毫秒
+  renew: 3600000
+
+#是否允许生成代码，生产环境设置为false
+generator:
+  enabled: true
+
+# SpringDoc OpenAPI配置
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui.html
+
+# 匿名访问配置
+security:
+  anonymous-urls:
+    # GET请求可匿名访问的接口
+    get:
+      # 允许放开接口
+      - "/"          #API URL首页
+      - "/flights/**"
+      - "/airports/**"
+      - "/users/findByEmail"
+      # swagger，静态资源等等
+      - "/api/docs"
+      - "/swagger-ui/**"
+      - "/v3/api-docs/**"
+      - "/swagger-ui.html"
+    # POST请求可匿名访问的接口
+    post:
+      - "/auth/login"
+      - "/auth/register"
+      - "/users/resetPwdByEmail"
+      - "/flights/with-cabins/search/paged"
+    # 所有方法都可匿名访问的接口
+    all:
+      - "/public/**"
+      - "/error"
+
+# CORS配置
+cors:
+  # 允许以下几种模式：
+  # 1. 特定IP（任意端口）: http://192.168.1.100:*
+  # 2. 特定IP+端口组合: http://192.168.1.100:8080
+  # 3. 特定IP的多个端口: http://192.168.1.100:8011, http://192.168.1.100:8012
+  # 4. *://*:8021
+  # 5. 本地开发环境: http://localhost:*
+  allowed-origin-patterns: ${CORS_ALLOWED_ORIGIN_PATTERNS:http://8.137.95.47:*/api,http://47.109.24.42:*/api,http://localhost:8011,http://localhost:80/api,http://localhost:8011/api,http://localhost/api}
+  allowed-methods: GET,POST,PUT,DELETE,OPTIONS,PATCH
+  allowed-headers: "*"  #Authorization,Content-Type,X-Requested-With,Accept,Origin,Access-Control-Request-Method,Access-Control-Request-Headers
+  max-age: 300
+  allow-credentials: ${CORS_ALLOWED_CREDENTIALS:true}
+
+#密码加密传输，前端公钥加密，后端私钥解密
+rsa:
+  private_key: MIIBUwIBADANBgkqhkiG9w0BAQEFAASCAT0wggE5AgEAAkEAq2K9709j5ERWswfnGNqyZKjZdnPc5R/xL1QwQDgSWji5/jbCFp8BGaE5f8JXqeZGvNYkbznFJpUcuaUyexignQIDAQABAkB1+Oo1KLjiEAh+BBqXiTLzBydp2idbsLkckx8DlZVMdE9yvmuvpL/ffJHRhyRTbSCX+80O8oAc6/9n2HPQzr8hAiEA0u2UhANztjxWdQtnlXqfp3mPl2vnpj+3/uQN1iVM7pMCIQDQAhKz2T0XW+HYTeWZIVSU+UwPj/d3S5QuvvvZ8dCCDwIgYM+q2uy6r2oCRLZ3VKRzouqofVeJe0TDrrn9n8x/AwECIF1SgMeV0HXZcFMWZ8szC/qmenyE79bi3sG2R9I5Tn37AiAX+3k3hUYbJ9/FsYGEcKg97vKRwjKwyM8fkt4Z0leoOw==
+
